@@ -1,0 +1,12 @@
+[package]
+name = "piola-cli"
+version = "0.1.0"
+edition = "2024"
+description = "CLI and REPL for the Piola programming language"
+repository = "https://github.com/cuervolu/piola"
+license = "MIT"
+keywords = ["piola", "language", "interpreter", "cli", "chile"]
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+piola = { path = "../piola" }
