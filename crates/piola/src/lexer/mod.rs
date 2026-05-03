@@ -1,11 +1,15 @@
 pub mod token;
 
+use miette::{NamedSource, SourceSpan};
+
 use crate::error::PiolaError;
 pub use token::{Span, Token, TokenKind};
 
 pub struct Lexer {
     chars: Vec<char>,
     pos: usize,
+    src: String,
+    filename: String,
 }
 
 impl Lexer {
@@ -13,6 +17,25 @@ impl Lexer {
         Lexer {
             chars: src.chars().collect(),
             pos: 0,
+            src: src.to_string(),
+            filename: "<anónimo>".to_string(),
+        }
+    }
+
+    pub fn with_filename(mut self, filename: impl Into<String>) -> Self {
+        self.filename = filename.into();
+        self
+    }
+
+    fn make_source(&self) -> NamedSource<String> {
+        NamedSource::new(&self.filename, self.src.clone())
+    }
+
+    fn error(&self, span: impl Into<SourceSpan>, mensaje: impl Into<String>) -> PiolaError {
+        PiolaError::Lexico {
+            src: self.make_source(),
+            span: span.into(),
+            mensaje: mensaje.into(),
         }
     }
 
@@ -32,21 +55,17 @@ impl Lexer {
         c
     }
 
-    fn byte_pos_at(&self, char_pos: usize) -> usize {
-        self.chars[..char_pos].iter().map(|c| c.len_utf8()).sum()
+    fn byte_pos(&self) -> usize {
+        self.chars[..self.pos].iter().map(|c| c.len_utf8()).sum()
     }
 
     fn skip_whitespace_and_comments(&mut self) {
         loop {
             match self.peek() {
-                Some(c) if c.is_whitespace() => {
-                    self.advance();
-                }
+                Some(c) if c.is_whitespace() => { self.advance(); }
                 Some('/') if self.peek_next() == Some('/') => {
                     while let Some(c) = self.peek() {
-                        if c == '\n' {
-                            break;
-                        }
+                        if c == '\n' { break; }
                         self.advance();
                     }
                 }
@@ -55,29 +74,29 @@ impl Lexer {
         }
     }
 
-    fn read_string(&mut self, quote: char) -> Result<TokenKind, PiolaError> {
+    fn read_string(&mut self, quote: char, start: usize) -> Result<TokenKind, PiolaError> {
         let mut s = String::new();
         loop {
             match self.advance() {
                 None => {
-                    return Err(PiolaError::Lexico(
-                        "Texto sin cerrar, te faltó la comilla del final weon.".into(),
+                    return Err(self.error(
+                        SourceSpan::new(start.into(), 1usize),
+                        "Texto sin cerrar, te faltó la comilla del final weon.",
                     ));
                 }
                 Some(c) if c == quote => break,
                 Some('\\') => match self.advance() {
-                    Some('n') => s.push('\n'),
-                    Some('t') => s.push('\t'),
+                    Some('n')  => s.push('\n'),
+                    Some('t')  => s.push('\t'),
                     Some('\\') => s.push('\\'),
-                    Some('"') => s.push('"'),
+                    Some('"')  => s.push('"'),
                     Some('\'') => s.push('\''),
-                    Some(c) => {
-                        s.push('\\');
-                        s.push(c);
-                    }
+                    Some(c)    => { s.push('\\'); s.push(c); }
                     None => {
-                        return Err(PiolaError::Lexico(
-                            "Escape incompleto al final del archivo.".into(),
+                        let pos = self.byte_pos();
+                        return Err(self.error(
+                            SourceSpan::new(pos.into(), 0usize),
+                            "Escape incompleto al final del archivo.",
                         ));
                     }
                 },
@@ -91,23 +110,13 @@ impl Lexer {
         let mut s = String::new();
         s.push(first);
         while let Some(c) = self.peek() {
-            if c.is_ascii_digit() {
-                s.push(c);
-                self.advance();
-            } else {
-                break;
-            }
+            if c.is_ascii_digit() { s.push(c); self.advance(); } else { break; }
         }
-        if self.peek() == Some('.') && self.peek_next().map_or(false, |c| c.is_ascii_digit()) {
+        if self.peek() == Some('.') && self.peek_next().is_some_and(|c| c.is_ascii_digit()) {
             s.push('.');
             self.advance();
             while let Some(c) = self.peek() {
-                if c.is_ascii_digit() {
-                    s.push(c);
-                    self.advance();
-                } else {
-                    break;
-                }
+                if c.is_ascii_digit() { s.push(c); self.advance(); } else { break; }
             }
         }
         TokenKind::Numero(s.parse().unwrap())
@@ -117,43 +126,35 @@ impl Lexer {
         let mut s = String::new();
         s.push(first);
         while let Some(c) = self.peek() {
-            if c.is_alphanumeric() || c == '_' {
-                s.push(c);
-                self.advance();
-            } else {
-                break;
-            }
+            if c.is_alphanumeric() || c == '_' { s.push(c); self.advance(); } else { break; }
         }
         match s.as_str() {
-            "wea" => TokenKind::Wea,
-            "duro" => TokenKind::Duro,
-            "pega" => TokenKind::Pega,
-            "cachai" => TokenKind::Cachai,
-            "si" => TokenKind::Si,
-            "mientras" => TokenKind::Mientras,
-            "para" => TokenKind::Para,
-            "en" => TokenKind::En,
-            "ojo" => TokenKind::Ojo,
-            "cago" => TokenKind::Cago,
-            "y" => TokenKind::Y,
-            "o" => TokenKind::O,
-            "no" => TokenKind::No,
-            "verdad" => TokenKind::Verdad,
-            "falso" => TokenKind::Falso,
-            "nada" => TokenKind::Nada,
-            _ => TokenKind::Ident(s),
+            "wea"     => TokenKind::Wea,
+            "duro"    => TokenKind::Duro,
+            "pega"    => TokenKind::Pega,
+            "cachai"  => TokenKind::Cachai,
+            "si"      => TokenKind::Si,
+            "mientras"=> TokenKind::Mientras,
+            "para"    => TokenKind::Para,
+            "en"      => TokenKind::En,
+            "ojo"     => TokenKind::Ojo,
+            "cago"    => TokenKind::Cago,
+            "y"       => TokenKind::Y,
+            "o"       => TokenKind::O,
+            "no"      => TokenKind::No,
+            "verdad"  => TokenKind::Verdad,
+            "falso"   => TokenKind::Falso,
+            "nada"    => TokenKind::Nada,
+            _         => TokenKind::Ident(s),
         }
     }
 
     fn next_token(&mut self) -> Result<Option<Token>, PiolaError> {
         self.skip_whitespace_and_comments();
-
-        let start_byte = self.byte_pos_at(self.pos);
+        let start = self.byte_pos();
 
         let c = match self.advance() {
-            None => {
-                return Ok(Some(Token::new(TokenKind::EOF, start_byte, start_byte)));
-            }
+            None    => return Ok(Some(Token::new(TokenKind::EOF, start, start))),
             Some(c) => c,
         };
 
@@ -172,51 +173,39 @@ impl Lexer {
             ',' => TokenKind::Coma,
             ':' => TokenKind::Colon,
             '=' => {
-                if self.peek() == Some('=') {
-                    self.advance();
-                    TokenKind::IgualIgual
-                } else {
-                    TokenKind::Asignar
-                }
+                if self.peek() == Some('=') { self.advance(); TokenKind::IgualIgual }
+                else { TokenKind::Asignar }
             }
             '!' => {
-                if self.peek() == Some('=') {
-                    self.advance();
-                    TokenKind::BangIgual
-                } else {
-                    return Err(PiolaError::Lexico(format!(
-                        "Carácter inesperado '!' en posición {start_byte}. Querías decir '!='?"
-                    )));
+                if self.peek() == Some('=') { self.advance(); TokenKind::BangIgual }
+                else {
+                    return Err(self.error(
+                        SourceSpan::new(start.into(), 1usize),
+                        "Carácter inesperado '!'. ¿Querías decir '!='?",
+                    ));
                 }
             }
             '<' => {
-                if self.peek() == Some('=') {
-                    self.advance();
-                    TokenKind::MenorIgual
-                } else {
-                    TokenKind::Menor
-                }
+                if self.peek() == Some('=') { self.advance(); TokenKind::MenorIgual }
+                else { TokenKind::Menor }
             }
             '>' => {
-                if self.peek() == Some('=') {
-                    self.advance();
-                    TokenKind::MayorIgual
-                } else {
-                    TokenKind::Mayor
-                }
+                if self.peek() == Some('=') { self.advance(); TokenKind::MayorIgual }
+                else { TokenKind::Mayor }
             }
-            '"' | '\'' => self.read_string(c)?,
-            d if d.is_ascii_digit() => self.read_number(d),
-            a if a.is_alphabetic() || a == '_' => self.read_ident_or_keyword(a),
+            '"' | '\'' => self.read_string(c, start)?,
+            d if d.is_ascii_digit()              => self.read_number(d),
+            a if a.is_alphabetic() || a == '_'   => self.read_ident_or_keyword(a),
             other => {
-                return Err(PiolaError::Lexico(format!(
-                    "Carácter inesperado '{other}' en posición {start_byte}."
-                )));
+                return Err(self.error(
+                    SourceSpan::new(start.into(), other.len_utf8()),
+                    format!("Carácter inesperado '{other}'."),
+                ));
             }
         };
 
-        let end_byte = self.byte_pos_at(self.pos);
-        Ok(Some(Token::new(kind, start_byte, end_byte)))
+        let end = self.byte_pos();
+        Ok(Some(Token::new(kind, start, end)))
     }
 
     pub fn tokenizar(mut self) -> Result<Vec<Token>, PiolaError> {
@@ -224,11 +213,9 @@ impl Lexer {
         loop {
             match self.next_token()? {
                 Some(tok) => {
-                    let is_eof = tok.kind == TokenKind::EOF;
+                    let eof = tok.kind == TokenKind::EOF;
                     tokens.push(tok);
-                    if is_eof {
-                        break;
-                    }
+                    if eof { break; }
                 }
                 None => break,
             }
@@ -239,6 +226,10 @@ impl Lexer {
 
 pub fn tokenizar(src: &str) -> Result<Vec<Token>, PiolaError> {
     Lexer::new(src).tokenizar()
+}
+
+pub fn tokenizar_archivo(src: &str, filename: &str) -> Result<Vec<Token>, PiolaError> {
+    Lexer::new(src).with_filename(filename).tokenizar()
 }
 
 

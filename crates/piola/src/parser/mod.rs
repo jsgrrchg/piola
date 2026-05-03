@@ -1,3 +1,5 @@
+use miette::NamedSource;
+
 use crate::{
     ast::{Expr, OpBin, OpUn, Stmt},
     error::PiolaError,
@@ -5,16 +7,35 @@ use crate::{
 };
 
 pub struct Parser {
-    tokens: Vec<Token>,
-    pos: usize,
+    tokens:   Vec<Token>,
+    pos:      usize,
+    src:      String,
+    filename: String,
 }
 
 impl Parser {
-    pub fn new(tokens: Vec<Token>) -> Self {
-        Parser { tokens, pos: 0 }
+    pub fn new(tokens: Vec<Token>, src: &str, filename: &str) -> Self {
+        Parser {
+            tokens,
+            pos: 0,
+            src: src.to_string(),
+            filename: filename.to_string(),
+        }
     }
 
-    // ── Token inspection ────────────────────────────────────────────────────
+
+    fn make_source(&self) -> NamedSource<String> {
+        NamedSource::new(&self.filename, self.src.clone())
+    }
+
+    fn error(&self, span: &Span, mensaje: impl Into<String>) -> PiolaError {
+        PiolaError::Sintaxis {
+            src: self.make_source(),
+            span: span.into(),
+            mensaje: mensaje.into(),
+        }
+    }
+
 
     fn peek(&self) -> &TokenKind {
         &self.tokens[self.pos].kind
@@ -48,12 +69,11 @@ impl Parser {
         if self.peek() == kind {
             Ok(self.advance())
         } else {
-            Err(PiolaError::Sintaxis(format!(
-                "Esperaba {:?} pero encontré {:?} en posición {}.",
-                kind,
-                self.peek(),
-                self.peek_span().start,
-            )))
+            let span = self.peek_span().clone();
+            Err(self.error(
+                &span,
+                format!("Esperaba {:?} pero encontré {:?}.", kind, self.peek()),
+            ))
         }
     }
 
@@ -61,7 +81,6 @@ impl Parser {
         matches!(self.peek(), TokenKind::EOF)
     }
 
-    // ── Top-level ────────────────────────────────────────────────────────────
 
     pub fn parsear(&mut self) -> Result<Vec<Stmt>, PiolaError> {
         let mut stmts = Vec::new();
@@ -71,23 +90,22 @@ impl Parser {
         Ok(stmts)
     }
 
-    // ── Statements ───────────────────────────────────────────────────────────
 
     fn parse_stmt(&mut self) -> Result<Stmt, PiolaError> {
         match self.peek() {
-            TokenKind::Wea => self.parse_decl_wea(),
-            TokenKind::Duro => self.parse_decl_duro(),
-            TokenKind::Pega => self.parse_decl_pega(),
-            TokenKind::Cachai => self.parse_cachai(),
-            TokenKind::Mientras => self.parse_mientras(),
-            TokenKind::Para => self.parse_para(),
-            TokenKind::Ojo => self.parse_ojo(),
-            _ => self.parse_expr_stmt(),
+            TokenKind::Wea     => self.parse_decl_wea(),
+            TokenKind::Duro    => self.parse_decl_duro(),
+            TokenKind::Pega    => self.parse_decl_pega(),
+            TokenKind::Cachai  => self.parse_cachai(),
+            TokenKind::Mientras=> self.parse_mientras(),
+            TokenKind::Para    => self.parse_para(),
+            TokenKind::Ojo     => self.parse_ojo(),
+            _                  => self.parse_expr_stmt(),
         }
     }
 
     fn parse_decl_wea(&mut self) -> Result<Stmt, PiolaError> {
-        self.advance(); // consume 'wea'
+        self.advance();
         let nombre = self.expect_ident()?;
         self.consume(&TokenKind::Asignar)?;
         let valor = self.parse_expr()?;
@@ -95,7 +113,7 @@ impl Parser {
     }
 
     fn parse_decl_duro(&mut self) -> Result<Stmt, PiolaError> {
-        self.advance(); // consume 'duro'
+        self.advance();
         let nombre = self.expect_ident()?;
         self.consume(&TokenKind::Asignar)?;
         let valor = self.parse_expr()?;
@@ -103,7 +121,7 @@ impl Parser {
     }
 
     fn parse_decl_pega(&mut self) -> Result<Stmt, PiolaError> {
-        self.advance(); // consume 'pega'
+        self.advance();
         let nombre = self.expect_ident()?;
         self.consume(&TokenKind::LParen)?;
         let params = self.parse_params()?;
@@ -114,9 +132,7 @@ impl Parser {
 
     fn parse_params(&mut self) -> Result<Vec<String>, PiolaError> {
         let mut params = Vec::new();
-        if self.check(&TokenKind::RParen) {
-            return Ok(params);
-        }
+        if self.check(&TokenKind::RParen) { return Ok(params); }
         params.push(self.expect_ident()?);
         while self.check(&TokenKind::Coma) {
             self.advance();
@@ -126,26 +142,23 @@ impl Parser {
     }
 
     fn parse_cachai(&mut self) -> Result<Stmt, PiolaError> {
-        self.advance(); // consume 'cachai'
+        self.advance();
         self.consume(&TokenKind::LParen)?;
         let cond = self.parse_expr()?;
         self.consume(&TokenKind::RParen)?;
         let entonces = self.parse_block()?;
-
-        // Check for 'si no' (two-token else)
         let si_no = if self.check(&TokenKind::Si) && self.peek_next() == &TokenKind::No {
-            self.advance(); // consume 'si'
-            self.advance(); // consume 'no'
+            self.advance();
+            self.advance();
             Some(self.parse_block()?)
         } else {
             None
         };
-
         Ok(Stmt::Cachai { cond, entonces, si_no })
     }
 
     fn parse_mientras(&mut self) -> Result<Stmt, PiolaError> {
-        self.advance(); // consume 'mientras'
+        self.advance();
         self.consume(&TokenKind::LParen)?;
         let cond = self.parse_expr()?;
         self.consume(&TokenKind::RParen)?;
@@ -154,7 +167,7 @@ impl Parser {
     }
 
     fn parse_para(&mut self) -> Result<Stmt, PiolaError> {
-        self.advance(); // consume 'para'
+        self.advance();
         self.consume(&TokenKind::LParen)?;
         let var = self.expect_ident()?;
         self.consume(&TokenKind::En)?;
@@ -165,7 +178,7 @@ impl Parser {
     }
 
     fn parse_ojo(&mut self) -> Result<Stmt, PiolaError> {
-        self.advance(); // consume 'ojo'
+        self.advance();
         let cuerpo = self.parse_block()?;
         self.consume(&TokenKind::Cago)?;
         self.consume(&TokenKind::LParen)?;
@@ -176,8 +189,7 @@ impl Parser {
     }
 
     fn parse_expr_stmt(&mut self) -> Result<Stmt, PiolaError> {
-        let expr = self.parse_expr()?;
-        Ok(Stmt::Expresion(expr))
+        Ok(Stmt::Expresion(self.parse_expr()?))
     }
 
     fn parse_block(&mut self) -> Result<Vec<Stmt>, PiolaError> {
@@ -190,51 +202,37 @@ impl Parser {
         Ok(stmts)
     }
 
-    // ── Expressions (Pratt) ──────────────────────────────────────────────────
-
     fn parse_expr(&mut self) -> Result<Expr, PiolaError> {
         self.parse_pratt(0)
     }
 
     fn parse_pratt(&mut self, min_bp: u8) -> Result<Expr, PiolaError> {
         let mut lhs = self.parse_unary()?;
-
         loop {
             let op = match self.peek() {
-                TokenKind::O => OpBin::O,
-                TokenKind::Y => OpBin::Y,
+                TokenKind::O          => OpBin::O,
+                TokenKind::Y          => OpBin::Y,
                 TokenKind::IgualIgual => OpBin::Eq,
-                TokenKind::BangIgual => OpBin::Neq,
-                TokenKind::Menor => OpBin::Lt,
-                TokenKind::Mayor => OpBin::Gt,
+                TokenKind::BangIgual  => OpBin::Neq,
+                TokenKind::Menor      => OpBin::Lt,
+                TokenKind::Mayor      => OpBin::Gt,
                 TokenKind::MenorIgual => OpBin::Lte,
                 TokenKind::MayorIgual => OpBin::Gte,
-                TokenKind::Mas => OpBin::Suma,
-                TokenKind::Menos => OpBin::Resta,
-                TokenKind::Estrella => OpBin::Mul,
-                TokenKind::Diagonal => OpBin::Div,
-                TokenKind::Modulo => OpBin::Mod,
-                _ => break,
+                TokenKind::Mas        => OpBin::Suma,
+                TokenKind::Menos      => OpBin::Resta,
+                TokenKind::Estrella   => OpBin::Mul,
+                TokenKind::Diagonal   => OpBin::Div,
+                TokenKind::Modulo     => OpBin::Mod,
+                _                     => break,
             };
-
             let (left_bp, right_bp) = infix_binding_power(&op);
-            if left_bp < min_bp {
-                break;
-            }
-
+            if left_bp < min_bp { break; }
             let span_start = self.peek_span().start;
-            self.advance(); // consume operator
+            self.advance();
             let rhs = self.parse_pratt(right_bp)?;
             let span = Span::new(span_start, self.peek_span().start);
-
-            lhs = Expr::Binario {
-                izq: Box::new(lhs),
-                op,
-                der: Box::new(rhs),
-                span,
-            };
+            lhs = Expr::Binario { izq: Box::new(lhs), op, der: Box::new(rhs), span };
         }
-
         Ok(lhs)
     }
 
@@ -260,12 +258,11 @@ impl Parser {
 
     fn parse_postfix(&mut self) -> Result<Expr, PiolaError> {
         let mut expr = self.parse_primary()?;
-
         loop {
             match self.peek() {
                 TokenKind::LParen => {
                     let span_start = self.peek_span().start;
-                    self.advance(); // consume '('
+                    self.advance();
                     let args = self.parse_args()?;
                     self.consume(&TokenKind::RParen)?;
                     let span = Span::new(span_start, self.peek_span().start);
@@ -273,7 +270,7 @@ impl Parser {
                 }
                 TokenKind::LCorchete => {
                     let span_start = self.peek_span().start;
-                    self.advance(); // consume '['
+                    self.advance();
                     let indice = self.parse_expr()?;
                     self.consume(&TokenKind::RCorchete)?;
                     let span = Span::new(span_start, self.peek_span().start);
@@ -282,15 +279,12 @@ impl Parser {
                 _ => break,
             }
         }
-
         Ok(expr)
     }
 
     fn parse_args(&mut self) -> Result<Vec<Expr>, PiolaError> {
         let mut args = Vec::new();
-        if self.check(&TokenKind::RParen) {
-            return Ok(args);
-        }
+        if self.check(&TokenKind::RParen) { return Ok(args); }
         args.push(self.parse_expr()?);
         while self.check(&TokenKind::Coma) {
             self.advance();
@@ -301,33 +295,17 @@ impl Parser {
 
     fn parse_primary(&mut self) -> Result<Expr, PiolaError> {
         match self.peek().clone() {
-            TokenKind::Numero(n) => {
-                self.advance();
-                Ok(Expr::Numero(n))
-            }
-            TokenKind::Texto(s) => {
-                self.advance();
-                Ok(Expr::Texto(s))
-            }
-            TokenKind::Verdad => {
-                self.advance();
-                Ok(Expr::Booleano(true))
-            }
-            TokenKind::Falso => {
-                self.advance();
-                Ok(Expr::Booleano(false))
-            }
-            TokenKind::Nada => {
-                self.advance();
-                Ok(Expr::Nada)
-            }
+            TokenKind::Numero(n) => { self.advance(); Ok(Expr::Numero(n)) }
+            TokenKind::Texto(s)  => { self.advance(); Ok(Expr::Texto(s)) }
+            TokenKind::Verdad    => { self.advance(); Ok(Expr::Booleano(true)) }
+            TokenKind::Falso     => { self.advance(); Ok(Expr::Booleano(false)) }
+            TokenKind::Nada      => { self.advance(); Ok(Expr::Nada) }
+
             TokenKind::Ident(nombre) => {
                 let span = self.peek_span().clone();
                 self.advance();
-
-                // Check for bare assignment: ident = expr (not ==)
                 if self.check(&TokenKind::Asignar) {
-                    self.advance(); // consume '='
+                    self.advance();
                     let valor = self.parse_expr()?;
                     let end = self.peek_span().start;
                     return Ok(Expr::Asignacion {
@@ -336,15 +314,16 @@ impl Parser {
                         span: Span::new(span.start, end),
                     });
                 }
-
                 Ok(Expr::Ident(nombre, span))
             }
+
             TokenKind::LParen => {
                 self.advance();
                 let expr = self.parse_expr()?;
                 self.consume(&TokenKind::RParen)?;
                 Ok(expr)
             }
+
             TokenKind::LCorchete => {
                 let span_start = self.peek_span().start;
                 self.advance();
@@ -353,9 +332,7 @@ impl Parser {
                     items.push(self.parse_expr()?);
                     while self.check(&TokenKind::Coma) {
                         self.advance();
-                        if self.check(&TokenKind::RCorchete) {
-                            break;
-                        }
+                        if self.check(&TokenKind::RCorchete) { break; }
                         items.push(self.parse_expr()?);
                     }
                 }
@@ -363,6 +340,7 @@ impl Parser {
                 let span = Span::new(span_start, self.peek_span().start);
                 Ok(Expr::Lista(items, span))
             }
+
             TokenKind::LLave => {
                 let span_start = self.peek_span().start;
                 self.advance();
@@ -374,9 +352,7 @@ impl Parser {
                     pairs.push((key, val));
                     while self.check(&TokenKind::Coma) {
                         self.advance();
-                        if self.check(&TokenKind::RLlave) {
-                            break;
-                        }
+                        if self.check(&TokenKind::RLlave) { break; }
                         let key = self.parse_expr()?;
                         self.consume(&TokenKind::Colon)?;
                         let val = self.parse_expr()?;
@@ -387,41 +363,39 @@ impl Parser {
                 let span = Span::new(span_start, self.peek_span().start);
                 Ok(Expr::Mapa(pairs, span))
             }
-            other => Err(PiolaError::Sintaxis(format!(
-                "Expresión inesperada: {:?} en posición {}.",
-                other,
-                self.peek_span().start,
-            ))),
+
+            other => {
+                let span = self.peek_span().clone();
+                Err(self.error(&span, format!("Expresión inesperada: {:?}.", other)))
+            }
         }
     }
 
     fn expect_ident(&mut self) -> Result<String, PiolaError> {
         match self.peek().clone() {
-            TokenKind::Ident(s) => {
-                self.advance();
-                Ok(s)
+            TokenKind::Ident(s) => { self.advance(); Ok(s) }
+            other => {
+                let span = self.peek_span().clone();
+                Err(self.error(
+                    &span,
+                    format!("Esperaba un identificador pero encontré esta wea {:?}.", other),
+                ))
             }
-            other => Err(PiolaError::Sintaxis(format!(
-                "Esperaba un identificador pero encontré {:?} en posición {}.",
-                other,
-                self.peek_span().start,
-            ))),
         }
     }
 }
 
-// Pratt binding powers: (left_bp, right_bp)
 fn infix_binding_power(op: &OpBin) -> (u8, u8) {
     match op {
-        OpBin::O => (1, 2),
-        OpBin::Y => (3, 4),
-        OpBin::Eq | OpBin::Neq => (5, 6),
+        OpBin::O                                      => (1, 2),
+        OpBin::Y                                      => (3, 4),
+        OpBin::Eq | OpBin::Neq                        => (5, 6),
         OpBin::Lt | OpBin::Gt | OpBin::Lte | OpBin::Gte => (7, 8),
-        OpBin::Suma | OpBin::Resta => (9, 10),
-        OpBin::Mul | OpBin::Div | OpBin::Mod => (11, 12),
+        OpBin::Suma | OpBin::Resta                    => (9, 10),
+        OpBin::Mul  | OpBin::Div | OpBin::Mod         => (11, 12),
     }
 }
 
-pub fn parsear(tokens: Vec<Token>) -> Result<Vec<Stmt>, PiolaError> {
-    Parser::new(tokens).parsear()
+pub fn parsear(tokens: Vec<Token>, src: &str, filename: &str) -> Result<Vec<Stmt>, PiolaError> {
+    Parser::new(tokens, src, filename).parsear()
 }

@@ -8,5 +8,7 @@ license = "MIT"
 keywords = ["piola", "language", "interpreter", "cli", "chile"]
 
 [dependencies]
-clap = { version = "4", features = ["derive"] }
-piola = { path = "../piola" }
+clap      = { version = "4", features = ["derive"] }
+miette    = { version = "7", features = ["fancy"] }
+rustyline = "18"
+piola     = { path = "../piola" }

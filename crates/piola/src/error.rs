@@ -1,18 +1,29 @@
-use std::fmt;
+use miette::{Diagnostic, NamedSource, SourceSpan};
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Error, Diagnostic)]
 pub enum PiolaError {
-    Lexico(String),
-    Sintaxis(String),
-    Runtime(String),
-}
+    #[error("Error léxico")]
+    #[diagnostic(code(piola::lexico), help("Revisa el carácter problemático"))]
+    Lexico {
+        #[source_code]
+        src: NamedSource<String>,
+        #[label("{mensaje}")]
+        span: SourceSpan,
+        mensaje: String,
+    },
 
-impl fmt::Display for PiolaError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            PiolaError::Lexico(msg) => write!(f, "Error léxico: {msg}"),
-            PiolaError::Sintaxis(msg) => write!(f, "Error de sintaxis: {msg}"),
-            PiolaError::Runtime(msg) => write!(f, "Error en tiempo de ejecución: {msg}"),
-        }
-    }
+    #[error("Error de sintaxis")]
+    #[diagnostic(code(piola::sintaxis))]
+    Sintaxis {
+        #[source_code]
+        src: NamedSource<String>,
+        #[label("{mensaje}")]
+        span: SourceSpan,
+        mensaje: String,
+    },
+
+    #[error("Error en tiempo de ejecución: {mensaje}")]
+    #[diagnostic(code(piola::runtime), help("Revisa la lógica de tu programa ctm"))]
+    Runtime { mensaje: String },
 }

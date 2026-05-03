@@ -1,48 +1,31 @@
-use std::fmt;
+use thiserror::Error;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Error)]
 pub enum RuntimeError {
+    #[error("{0}")]
     TipoInvalido(String),
-    VarNoDefinida(String),
-    IndiceInvalido(i64, usize),
-    ClaveInexistente(String),
-    ConstanteInmutable(String),
-    DivisionPorCero,
-    NumArgInvalido(usize, usize),
-    NoLlamable(String),
-    /// Used internally for ojo/cago — carries the error message as a string value
-    ErrorCatcheable(String),
-}
 
-impl fmt::Display for RuntimeError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            RuntimeError::TipoInvalido(msg) => write!(f, "{msg}"),
-            RuntimeError::VarNoDefinida(name) => {
-                write!(f, "La wea '{name}' no existe papito.")
-            }
-            RuntimeError::IndiceInvalido(idx, len) => {
-                write!(
-                    f,
-                    "Te fuiste al chancho, el índice {idx} no existe en la lista (largo: {len})."
-                )
-            }
-            RuntimeError::ClaveInexistente(key) => {
-                write!(f, "La clave '{key}' no existe papito.")
-            }
-            RuntimeError::ConstanteInmutable(name) => {
-                write!(f, "Oe, '{name}' es duro, no lo podí cambiar.")
-            }
-            RuntimeError::DivisionPorCero => {
-                write!(f, "Weon, no se puede dividir por cero.")
-            }
-            RuntimeError::NumArgInvalido(exp, got) => {
-                write!(f, "La pega espera {exp} args, le pasaste {got}.")
-            }
-            RuntimeError::NoLlamable(tipo) => {
-                write!(f, "'{tipo}' no es una pega papito.")
-            }
-            RuntimeError::ErrorCatcheable(msg) => write!(f, "{msg}"),
-        }
-    }
+    #[error("La wea '{0}' no existe papito.")]
+    VarNoDefinida(String),
+
+    #[error("Te fuiste al chancho, el índice {0} no existe en la lista (largo: {1}).")]
+    IndiceInvalido(i64, usize),
+
+    #[error("La clave '{0}' no existe papito.")]
+    ClaveInexistente(String),
+
+    #[error("Oe, '{0}' es duro, no lo podí cambiar.")]
+    ConstanteInmutable(String),
+
+    #[error("Weon, no se puede dividir por cero.")]
+    DivisionPorCero,
+
+    #[error("La pega espera {0} args, le pasaste {1}.")]
+    NumArgInvalido(usize, usize),
+
+    #[error("'{0}' no es una pega papito.")]
+    NoLlamable(String),
+
+    #[error("{0}")]
+    ErrorCatcheable(String),
 }

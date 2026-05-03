@@ -1,3 +1,5 @@
+use miette::SourceSpan;
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Span {
     pub start: usize,
@@ -9,6 +11,19 @@ impl Span {
         Span { start, end }
     }
 }
+
+impl From<&Span> for SourceSpan {
+    fn from(s: &Span) -> Self {
+        SourceSpan::new(s.start.into(), (s.end - s.start).into())
+    }
+}
+
+impl From<Span> for SourceSpan {
+    fn from(s: Span) -> Self {
+        (&s).into()
+    }
+}
+
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Token {

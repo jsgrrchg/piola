@@ -41,7 +41,7 @@ impl Interprete {
 
     pub fn correr(&mut self, stmts: &[Stmt]) -> Result<Valor, PiolaError> {
         self.eval_stmts(stmts, Rc::clone(&self.global))
-            .map_err(|e| PiolaError::Runtime(e.to_string()))
+            .map_err(|e| PiolaError::Runtime { mensaje: e.to_string() })
     }
 
     fn eval_stmts(
@@ -403,8 +403,6 @@ impl Interprete {
     }
 }
 
-// ── Helper functions ──────────────────────────────────────────────────────────
-
 fn numeric_op(
     lhs: Valor,
     rhs: Valor,
@@ -446,8 +444,6 @@ fn compare_op(
         ))),
     }
 }
-
-// ── Built-in functions ───────────────────────────────────────────────────────
 
 fn builtin_altiro(args: Vec<Valor>) -> Result<Valor, RuntimeError> {
     let parts: Vec<String> = args.iter().map(|v| v.to_string()).collect();
