@@ -1,0 +1,344 @@
+---
+title: Tipos de Datos
+description: numero, texto, booleano, nada, lista y mapa — los tipos de Piola y cómo usarlos.
+---
+
+import { Aside, Tabs, TabItem, Card, CardGrid, Badge } from '@astrojs/starlight/components';
+
+Piola es de **tipado dinámico**: una variable puede guardar cualquier tipo de valor, y ese tipo puede cambiar. No declaras el tipo, Piola lo infiere. Cuando algo no cuadra, te lo dice en runtime.
+
+---
+
+## Tipos primitivos
+
+### `numero` <Badge text="f64" variant="note" />
+
+Todos los números en Piola son punto flotante de 64 bits. No hay distinción entre entero y decimal.
+
+```piola
+wea goles_alexis  = 47       // entero
+wea promedio_gol  = 0.72     // decimal
+wea deuda_fifa    = 1.5e6    // notación científica → 1500000
+
+altiro(cachar(goles_alexis))  // → numero
+```
+
+Las operaciones aritméticas estándar:
+
+```piola
+wea partidos   = 180
+wea victorias  = 98
+wea porcentaje = victorias / partidos * 100
+
+altiro(porcentaje)  // → 54.44444444444444
+```
+
+```piola
+wea minutos   = 94
+wea descuento = minutos % 90  // módulo
+altiro(descuento)              // → 4
+```
+
+<Aside type="caution">
+  División por cero es un error de runtime:
+
+  ```piola
+  wea x = 10 / 0
+  // Error: Weon, no se puede dividir por cero.
+  ```
+</Aside>
+
+---
+
+### `texto`
+
+Cadenas de caracteres entre comillas dobles o simples. Se concatenan con `+`.
+
+```piola
+wea jugador  = "Arturo Vidal"
+wea apodo    = 'El Rey'
+wea completo = jugador + " — " + apodo
+
+altiro(completo)  // → Arturo Vidal — El Rey
+```
+
+Texto con números se convierte automáticamente al concatenar:
+
+```piola
+wea nombre  = "Gary Medel"
+wea tarjetas = 15
+
+altiro(nombre + " tiene " + tarjetas + " tarjetas amarillas")
+// → Gary Medel tiene 15 tarjetas amarillas
+```
+
+Secuencias de escape:
+
+```piola
+altiro("Primera línea\nSegunda línea")
+altiro("Campeón:\t\"La Roja\"")
+```
+
+---
+
+### `booleano`
+
+Solo dos valores posibles: `verdad` y `falso`.
+
+```piola
+wea es_titular     = verdad
+wea esta_lesionado = falso
+wea puede_jugar    = es_titular y no esta_lesionado
+
+altiro(puede_jugar)  // → verdad
+```
+
+Las comparaciones devuelven booleanos:
+
+```piola
+wea goles_chile   = 3
+wea goles_bolivia = 0
+
+altiro(goles_chile > goles_bolivia)   // → verdad
+altiro(goles_chile == goles_bolivia)  // → falso
+altiro(goles_chile != goles_bolivia)  // → verdad
+```
+
+**Valores "falsy"** — se evalúan como `falso` en un `cachai`:
+
+| Valor       | Falsy |
+|-------------|-------|
+| `falso`     | ✓     |
+| `nada`      | ✓     |
+| `0`         | ✓     |
+| `""`        | ✓     |
+| Todo lo demás | ✗   |
+
+```piola
+cachai (0) {
+  altiro("nunca llega acá")
+}
+
+cachai ("") {
+  altiro("tampoco acá")
+}
+
+cachai ("Colo-Colo") {
+  altiro("esto sí se ejecuta")  // → esto sí se ejecuta
+}
+```
+
+---
+
+### `nada`
+
+Representa la ausencia de valor. Es lo que devuelve una función que no retorna nada explícitamente.
+
+```piola
+wea transferencia = nada  // aún no se concreta
+
+cachai (transferencia == nada) {
+  altiro("Alexis sigue sin club, esperando ofertas")
+}
+```
+
+<Aside>
+  `nada` es distinto de `0`, `falso`, o `""`. Es la **ausencia** de valor, no un valor vacío.
+</Aside>
+
+---
+
+## Colecciones
+
+### `lista`
+
+Colección ordenada de valores. Se define con `[]`. Puede mezclar tipos.
+
+```piola
+wea plantel = ["Bravo", "Medel", "Maripán", "Isla", "Alexis", "Vidal"]
+wea numeros = [1, 2, 3, 4, 5]
+wea mixta   = [1, "dos", verdad, nada]  // válido
+```
+
+**Acceso por índice** — base cero:
+
+```piola
+altiro(plantel[0])   // → Bravo
+altiro(plantel[2])   // → Maripán
+altiro(plantel[-1])  // → Vidal (índice negativo: desde el final)
+```
+
+**Modificar un elemento:**
+
+```piola
+plantel[4] = "Brereton"
+altiro(plantel[4])  // → Brereton
+```
+
+**Largo:**
+
+```piola
+altiro(largo(plantel))  // → 6
+```
+
+**Iterar:**
+
+```piola
+para (jugador en plantel) {
+  altiro("  " + jugador)
+}
+```
+
+**Listas anidadas:**
+
+```piola
+wea fixture = [
+  ["Chile", "Bolivia"],
+  ["Argentina", "Perú"],
+  ["Uruguay", "Colombia"]
+]
+
+altiro(fixture[0])      // → [Chile, Bolivia]
+altiro(fixture[0][1])   // → Bolivia
+```
+
+<Aside type="caution">
+  Acceder a un índice que no existe es un error:
+
+  ```piola
+  wea lista = [1, 2, 3]
+  altiro(lista[10])
+  // Error: Te fuiste al chancho, el índice 10 no existe en la lista (largo: 3).
+  ```
+</Aside>
+
+---
+
+### `mapa`
+
+Colección de pares clave-valor. Se define con `{}`. Las claves son texto.
+
+```piola
+wea jugador = {
+  "nombre":   "Charles Aránguiz",
+  "posicion": "mediocampista",
+  "clubes":   ["La U", "São Paulo", "Bayer Leverkusen", "La U"],
+  "copas":    2
+}
+```
+
+**Acceso por clave:**
+
+```piola
+altiro(jugador["nombre"])    // → Charles Aránguiz
+altiro(jugador["copas"])     // → 2
+altiro(jugador["clubes"][0]) // → La U
+```
+
+**Modificar un valor:**
+
+```piola
+jugador["copas"] = 3
+```
+
+**Clave inexistente:**
+
+```piola
+altiro(jugador["sueldo"])
+// Error: La clave 'sueldo' no existe papito.
+```
+
+**Mapas anidados:**
+
+```piola
+wea seleccion = {
+  "pais":    "Chile",
+  "apodo":   "La Roja",
+  "tecnico": {
+    "nombre": "Ricardo Gareca",
+    "pais":   "Argentina"
+  }
+}
+
+altiro(seleccion["tecnico"]["nombre"])  // → Ricardo Gareca
+```
+
+---
+
+## Verificar el tipo: `cachar()`
+
+La función nativa `cachar()` devuelve el tipo de cualquier valor como texto:
+
+```piola
+altiro(cachar(42))           // → numero
+altiro(cachar("La Roja"))    // → texto
+altiro(cachar(verdad))       // → booleano
+altiro(cachar(nada))         // → nada
+altiro(cachar([1, 2, 3]))    // → lista
+altiro(cachar({"a": 1}))     // → mapa
+altiro(cachar(pega x() {}))  // → pega
+```
+
+Útil para hacer lógica condicional según el tipo:
+
+```piola
+pega describir(valor) {
+  wea tipo = cachar(valor)
+
+  cachai (tipo == "numero") {
+    "el número " + valor
+  } si no {
+    cachai (tipo == "texto") {
+      "el texto \"" + valor + "\""
+    } si no {
+      cachai (tipo == "lista") {
+        "una lista de " + largo(valor) + " elementos"
+      } si no {
+        "un " + tipo
+      }
+    }
+  }
+}
+
+altiro(describir(9))               // → el número 9
+altiro(describir("Estadio Monumental")) // → el texto "Estadio Monumental"
+altiro(describir([1, 2, 3]))       // → una lista de 3 elementos
+altiro(describir(nada))            // → un nada
+```
+
+---
+
+## Resumen
+
+<CardGrid>
+  <Card title="numero" icon="approve-check">
+    `42`, `3.14`, `-7`, `1.5e6`
+
+    Enteros y decimales son el mismo tipo. Aritmética estándar con `+`, `-`, `*`, `/`, `%`.
+  </Card>
+  <Card title="texto" icon="approve-check">
+    `"wena"`, `'piola'`
+
+    Concatenación con `+`. Conversión automática al concatenar con números.
+  </Card>
+  <Card title="booleano" icon="approve-check">
+    `verdad`, `falso`
+
+    Operadores: `y`, `o`, `no`. Comparaciones devuelven booleano.
+  </Card>
+  <Card title="nada" icon="approve-check">
+    `nada`
+
+    Ausencia de valor. Falsy en condiciones.
+  </Card>
+  <Card title="lista" icon="approve-check">
+    `[1, "dos", verdad]`
+
+    Ordenada, indexada desde 0. Índices negativos desde el final.
+  </Card>
+  <Card title="mapa" icon="approve-check">
+    `{"clave": valor}`
+
+    Pares clave-valor. Claves siempre texto. Anidable.
+  </Card>
+</CardGrid>

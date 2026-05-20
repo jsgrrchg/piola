@@ -1,0 +1,147 @@
+---
+title: Variables y Constantes
+description: wea y duro, cómo declarar, asignar y entender el scope en Piola.
+---
+
+import { Aside, Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
+
+En Piola hay dos formas de guardar un valor: `wea` para cosas que pueden cambiar, y `duro` para cosas que no.
+
+
+## `wea` — variable mutable
+
+```piola
+wea nombre = "Claudia Herrera"
+wea edad   = 38
+wea casada = verdad
+```
+
+Una `wea` puede cambiar de valor en cualquier momento:
+
+```piola
+wea presidente = "Pinochet"
+presidente = "Aylwin"  // válido, la wea cambia
+```
+
+Y también puede cambiar de *tipo*:
+
+```piola
+wea estado = "soltero"   // texto
+estado = 42              // ahora es número, Piola no se queja
+estado = verdad          // ahora es booleano
+```
+
+<Aside type="caution">
+  El tipado dinámico es conveniente, pero con poder viene responsabilidad. Si después haces `estado + 10` y `estado` resulta ser `"casado"`, Piola te va a retar.
+</Aside>
+
+---
+
+## `duro` — constante inmutable
+
+Usa `duro` cuando el valor no debe cambiar nunca. Piola lo hace cumplir.
+
+```piola
+duro TEMPORADAS_LOS_80 = 7
+duro PI                = 3.1415
+duro GRITO_DE_CONDORITO = "¡Plop!"
+```
+
+Intentar modificar una constante es un error de runtime:
+
+```piola
+duro campeón = "Colo-Colo"
+campeón = "La U"  // Error: 'campeón' es duro, no lo podí cambiar.
+```
+
+<Aside type="tip">
+  Convención: las constantes se escriben en `MAYUSCULAS_CON_GUION`. No es obligatorio, pero ayuda a distinguirlas de un vistazo.
+</Aside>
+
+
+## Scope de bloque
+
+Las variables en Piola tienen **alcance de bloque** — solo existen dentro del `{}` donde fueron declaradas.
+
+```piola
+wea sospechoso = "Pancho"
+
+cachai (sospechoso == "Pancho") {
+  wea coartada = "estaba en el mall"  // solo existe acá adentro
+  altiro(coartada)                    // → estaba en el mall
+}
+
+altiro(coartada)  // Error: La wea 'coartada' no existe papito.
+```
+
+Pero una `wea` declarada afuera sí es visible desde adentro — y se puede modificar:
+
+```piola
+wea puntaje = 0
+
+para (episodio en [1, 2, 3, 4, 5]) {
+  puntaje = puntaje + 10  // modifica la wea del bloque padre
+}
+
+altiro(puntaje)  // → 50
+```
+
+---
+
+## Múltiples variables
+
+Cada declaración va en su propia línea. No hay destructuring todavía, pero la lectura es limpia:
+
+```piola
+// Personajes de Los 80
+wea papá   = "Ernesto"
+wea mamá   = "Ana"
+wea hijo   = "Pedrito"
+wea hija   = "Claudia"
+duro BARRIO = "La Florida"
+```
+
+---
+
+## Referencia rápida
+
+| Keyword | Mutable | Scope   | Cuándo usarla                          |
+|---------|---------|---------|----------------------------------------|
+| `wea`   | ✓       | bloque  | Casi siempre                           |
+| `duro`  | ✗       | bloque  | Valores que nunca deben cambiar        |
+
+---
+
+## Errores comunes
+
+<Tabs>
+  <TabItem label="Usar antes de declarar">
+
+```piola
+altiro(personaje)           // Error: La wea 'personaje' no existe papito.
+wea personaje = "Condorito"
+```
+
+Piola lee de arriba hacia abajo. No hay hoisting.
+
+  </TabItem>
+  <TabItem label="Olvidar el wea">
+
+```piola
+nombre = "Yayita"  // Error: La wea 'nombre' no existe papito.
+```
+
+Toda variable debe declararse con `wea` o `duro` antes de usarse.
+
+  </TabItem>
+  <TabItem label="Modificar una constante">
+
+```piola
+duro VILLANO = "Pepe Cortisona"
+VILLANO = "Washington"  // Error: 'VILLANO' es duro, no lo podí cambiar.
+```
+
+Si necesitas que cambie, usa `wea`.
+
+  </TabItem>
+</Tabs>

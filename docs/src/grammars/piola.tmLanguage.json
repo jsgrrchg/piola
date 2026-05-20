@@ -1,0 +1,55 @@
+{
+  "id": "piola",
+  "name": "piola",
+  "scopeName": "source.piola",
+  "aliases": ["cl"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#keywords" },
+    { "include": "#builtins" },
+    { "include": "#literals" },
+    { "include": "#operators" },
+    { "include": "#identifiers" }
+  ],
+  "repository": {
+    "comments": {
+      "match": "//.*$",
+      "name": "comment.line.double-slash.piola"
+    },
+    "strings": {
+      "name": "string.quoted.piola",
+      "begin": "[\"']",
+      "end": "[\"']",
+      "patterns": [{
+        "match": "\\\\[ntr\\\\\"']",
+        "name": "constant.character.escape.piola"
+      }]
+    },
+    "numbers": {
+      "match": "\\b[0-9]+(\\.[0-9]+)?\\b",
+      "name": "constant.numeric.piola"
+    },
+    "keywords": {
+      "match": "\\b(wea|duro|pega|cachai|si|no|mientras|para|en|ojo|cago|devolver|cortala|sigue)\\b",
+      "name": "keyword.control.piola"
+    },
+    "builtins": {
+      "match": "\\b(altiro|largo|cachar|pregunta)\\b",
+      "name": "support.function.builtin.piola"
+    },
+    "literals": {
+      "match": "\\b(verdad|falso|nada)\\b",
+      "name": "constant.language.piola"
+    },
+    "operators": {
+      "match": "\\b(y|o)\\b|[+\\-*/%=<>!]=?|==|!=",
+      "name": "keyword.operator.piola"
+    },
+    "identifiers": {
+      "match": "[a-zA-Z_][a-zA-Z0-9_]*",
+      "name": "variable.other.piola"
+    }
+  }
+}

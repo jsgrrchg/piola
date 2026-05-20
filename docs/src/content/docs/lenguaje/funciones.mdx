@@ -1,0 +1,253 @@
+---
+title: Funciones
+description: pega — cómo definir, llamar y componer funciones en Piola.
+---
+
+import { Aside, Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
+
+En Piola, las funciones se llaman `pega`. Defines un bloque de trabajo, le das un nombre, y después lo mandas a hacer.
+
+## Declaración básica
+
+```piola
+pega saludar(nombre) {
+  "Wena, " + nombre + "!"
+}
+
+altiro(saludar("Tulio"))   // → Wena, Tulio!
+altiro(saludar("Bodoque")) // → Wena, Bodoque!
+```
+
+La sintaxis es `pega nombre(parámetros) { cuerpo }`.
+
+## Retorno implícito
+
+La **última expresión** del cuerpo es el valor que devuelve la función. No necesitas escribir nada extra:
+
+```piola
+pega titular(periodista, noticia) {
+  periodista + " informa: " + noticia
+}
+
+altiro(titular("Tulio Triviño", "¡Mañana es sábado!"))
+// → Tulio Triviño informa: ¡Mañana es sábado!
+```
+
+<Aside type="tip">
+  Si el cuerpo tiene varias líneas, el valor de retorno es la última expresión evaluada — no el último statement.
+</Aside>
+
+---
+
+## `devolver` explícito
+
+A veces necesitas salir antes del final. Usa `devolver`:
+
+```piola
+pega pronostico_policarpo(temperatura) {
+  cachai (temperatura > 100) {
+    devolver "Señal de mal pronóstico, como siempre"
+  }
+  cachai (temperatura < -50) {
+    devolver "Tampoco eso, Policarpo"
+  }
+  "Pronóstico: " + temperatura + " grados (probablemente equivocado)"
+}
+
+altiro(pronostico_policarpo(200))
+// → Señal de mal pronóstico, como siempre
+```
+
+---
+
+## Sin parámetros
+
+Una `pega` puede no recibir nada:
+
+```piola
+pega es_hora_de_noticias() {
+  altiro("¡Buenas noches!")
+  altiro("Yo me llamo Tulio Triviño")
+  altiro("¡Y esto es 31 minutos!")
+}
+
+es_hora_de_noticias()
+```
+
+---
+
+## Múltiples parámetros
+
+```piola
+pega reporte_de_campo(reportera, lugar, noticia) {
+  reportera + " desde " + lugar + ": " + noticia
+}
+
+altiro(reporte_de_campo("Patana", "el desierto", "hace calor aquí"))
+// → Patana desde el desierto: hace calor aquí
+```
+
+---
+
+## Funciones como valores (Próximamente)
+
+Las funciones son ciudadanos de primera clase en Piola. Se pueden guardar en variables, pasar como argumentos, y retornar desde otras funciones.
+
+```piola
+// Guardada en una wea
+wea investigar = pega misterio(ser_vivo) {
+  "El misterio de los seres vivos: ¿Por qué " + ser_vivo + " hace lo que hace?"
+}
+
+altiro(investigar("el oso"))
+// → El misterio de los seres vivos: ¿Por qué el oso hace lo que hace?
+```
+
+```piola
+// Pasada como argumento
+pega presentar(intro_fn, contenido) {
+  wea intro = intro_fn()
+  intro + " — " + contenido
+}
+
+pega intro_bodoque() {
+  "Juan Carlos Bodoque"
+}
+
+altiro(presentar(intro_bodoque, "Hoy: los pingüinos"))
+// → Juan Carlos Bodoque — Hoy: los pingüinos
+```
+
+---
+
+## Recursión
+
+Una `pega` puede llamarse a sí misma. El ejemplo clásico que confirma que el intérprete funciona:
+
+```piola
+pega fibonacci(n) {
+  cachai (n <= 1) {
+    n
+  } si no {
+    fibonacci(n - 1) + fibonacci(n - 2)
+  }
+}
+
+altiro(fibonacci(10))  // → 55
+```
+
+Un ejemplo más 31 minutos:
+
+```piola
+// Cuenta cuántas veces Maguito puede repetir una frase antes de que explote
+pega repetir(frase, veces) {
+  cachai (veces == 0) {
+    "¡Quiero hacer mi show!"
+  } si no {
+    altiro(frase)
+    repetir(frase, veces - 1)
+  }
+}
+
+repetir("¡Quiero hacer mi show!", 3)
+// → ¡Quiero hacer mi show!
+// → ¡Quiero hacer mi show!
+// → ¡Quiero hacer mi show!
+// → ¡Quiero hacer mi show!
+```
+
+---
+
+## Closures
+
+Una `pega` recuerda el entorno donde fue creada. Si una función interna referencia una variable de su función contenedora, la captura:
+
+```piola
+pega crear_corresponsal(nombre) {
+  pega reportar(noticia) {
+    nombre + " reporta: " + noticia  // ← captura 'nombre' del exterior
+  }
+  reportar
+}
+
+wea patana  = crear_corresponsal("Patana Tufillo")
+wea juanin  = crear_corresponsal("Juanín Juan Hope")
+
+altiro(patana("hay tráfico en la autopista"))
+// → Patana Tufillo reporta: hay tráfico en la autopista
+
+altiro(juanin("Colo-Colo perdió otra vez"))
+// → Juanín Juan Hope reporta: Colo-Colo perdió otra vez
+```
+
+<Aside>
+  Esto es un **closure**: `reportar` lleva consigo el `nombre` aunque `crear_corresponsal` ya terminó de ejecutarse. Cada corresponsal tiene su propia copia del nombre.
+
+  Si vienes de JavaScript, esto es exactamente lo mismo. Si vienes de Java, piensa en una inner class que captura variables `final` del método contenedor.
+</Aside>
+
+---
+
+## Errores comunes
+
+<Tabs>
+  <TabItem label="Argumentos incorrectos">
+
+```piola
+pega titular(periodista, noticia) {
+  periodista + ": " + noticia
+}
+
+titular("Tulio")
+// Error: La pega espera 2 args, le pasaste 1.
+```
+
+  </TabItem>
+  <TabItem label="Llamar algo que no es pega">
+
+```piola
+wea nombre = "Calcetín con Rombos Man"
+nombre()
+// Error: 'texto' no es una pega papito.
+```
+
+  </TabItem>
+  <TabItem label="devolver fuera de una pega">
+
+```piola
+devolver "esto no está dentro de nada"
+// Error: 'devolver' solo puede usarse dentro de una pega papito.
+```
+
+  </TabItem>
+</Tabs>
+
+---
+
+## Referencia rápida
+
+```piola
+// Forma básica
+pega nombre(param1, param2) {
+  // cuerpo
+  resultado  // ← retorno implícito
+}
+
+// Con retorno explícito
+pega nombre(param) {
+  cachai (param == nada) {
+    devolver "sin valor"
+  }
+  "valor: " + param
+}
+
+// Sin parámetros
+pega hacer_algo() {
+  altiro("hecho")
+}
+
+// Guardada en variable
+wea mi_pega = pega calcular(x) {
+  x * 2
+}
+```
