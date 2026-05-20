@@ -89,7 +89,7 @@ El intérprete está escrito en Rust, es deliberadamente simple, y cada fase del
 
 ## Estado actual
 
-El pipeline completo — lexer, parser, AST e intérprete tree-walking — está implementado y funcional. Las siguientes fases — compilador a bytecode, VM y garbage collector — están en el roadmap. El detalle de cada fase está en [`docs/roadmap.md`](docs/roadmap.md).
+El pipeline completo — lexer, parser, AST e intérprete tree-walking — está implementado y funcional. Las siguientes fases — compilador a bytecode, VM y garbage collector — están en el roadmap. El detalle de cada fase está en [`docs/roadmap`](https://cuervolu.github.io/piola/roadmap/).
 
 ## Construir desde el código fuente
 
@@ -108,4 +108,4 @@ Piola es open source. Si te interesa contribuir, sea código, documentación, ej
 
 Lo más valioso que puedes hacer en esta etapa es escribir programas en Piola y reportar qué se siente natural y qué no. El lenguaje mejora con uso real, no solo con teoría.
 
-Para entender la filosofía del proyecto antes de contribuir, lee [`docs/filosofia.md`](docs/filosofia.md).
+Para entender la filosofía del proyecto antes de contribuir, lee [`docs/filosofia`](https://cuervolu.github.io/piola/filosofia/).
