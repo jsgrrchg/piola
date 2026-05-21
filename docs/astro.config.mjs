@@ -32,6 +32,7 @@ export default defineConfig({
             { label: 'Introducción', link: '/' },
             { label: 'Instalación', link: '/instalacion' },
             { label: 'Filosofía', link: '/filosofia' },
+            { label: 'Roadmap', link: '/roadmap' },
           ],
         },
         {

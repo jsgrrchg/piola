@@ -14,3 +14,8 @@ opt-level = 3      # full optimization
 lto = "thin"       # link-time optimization (faster than "fat", still good)
 codegen-units = 1  # single codegen unit — slower compile, better optimization
 strip = "symbols"  # remove debug symbols from binary
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"

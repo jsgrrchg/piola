@@ -25,13 +25,13 @@ altiro(fibonacci(10))  // → 55
 ### macOS y Linux
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/cuervolu/piola/main/install.sh | bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/cuervolu/piola/releases/latest/download/piola-cli-installer.sh | sh
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
-iwr -useb https://raw.githubusercontent.com/cuervolu/piola/main/install.ps1 | iex
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/cuervolu/piola/releases/latest/download/piola-cli-installer.ps1 | iex"
 ```
 
 ### Verificar la instalación
@@ -48,15 +48,17 @@ piola update
 
 ### Instalación manual
 
-Si prefieres no usar los scripts, descarga el binario para tu plataforma directamente desde [GitHub Releases](https://github.com/cuervolu/piola/releases/latest) y agrégalo a tú `PATH`.
+Si prefieres no usar los scripts, descarga el binario para tu plataforma directamente desde [GitHub Releases](https://github.com/cuervolu/piola/releases/latest) y agrégalo a tu `PATH`.
 
 | Plataforma            | Archivo                                         |
-| --------------------- | ----------------------------------------------- |
-| macOS (Apple Silicon) | `piola-vX.Y.Z-aarch64-apple-darwin.tar.gz`      |
-| macOS (Intel)         | `piola-vX.Y.Z-x86_64-apple-darwin.tar.gz`       |
-| Linux x86_64          | `piola-vX.Y.Z-x86_64-unknown-linux-gnu.tar.gz`  |
-| Linux ARM64           | `piola-vX.Y.Z-aarch64-unknown-linux-gnu.tar.gz` |
-| Windows 64-bit        | `piola-vX.Y.Z-x86_64-pc-windows-msvc.zip`       |
+| --------------------- | ----------------------------------------------- -----|
+| macOS (Apple Silicon) | `piola-cli-aarch64-apple-darwin.tar.xz`              |
+| macOS (Intel)         | `piola-cli-x86_64-apple-darwin.tar.xz`               |
+| Linux x86_64          | `piola-cli-x86_64-unknown-linux-gnu.tar.xz`          |
+| Linux ARM64           | `piola-cli-aarch64-unknown-linux-gnu.tar.xz`         |
+| Windows 64-bit        | `piola-cli-x86_64-pc-windows-msvc.zip`               |
+
+Cada archivo tiene un `.sha256` correspondiente para verificar la integridad.
 
 ---
 
@@ -93,7 +95,7 @@ El intérprete está escrito en Rust, es deliberadamente simple, y cada fase del
 
 ## Estado actual
 
-El pipeline completo — lexer, parser, AST e intérprete tree-walking — está implementado y funcional. Las siguientes fases — compilador a bytecode, VM y garbage collector — están en el roadmap. El detalle de cada fase está en [`docs/roadmap.md`](docs/roadmap.md).
+El pipeline completo — lexer, parser, AST e intérprete tree-walking — está implementado y funcional. Las siguientes fases — compilador a bytecode, VM y garbage collector — están en el roadmap. El detalle de cada fase está en [`docs/roadmap`](https://cuervolu.github.io/piola/roadmap/).
 
 ## Construir desde el código fuente
 
@@ -112,4 +114,4 @@ Piola es open source. Si te interesa contribuir, sea código, documentación, ej
 
 Lo más valioso que puedes hacer en esta etapa es escribir programas en Piola y reportar qué se siente natural y qué no. El lenguaje mejora con uso real, no solo con teoría.
 
-Para entender la filosofía del proyecto antes de contribuir, lee [`docs/filosofia.md`](docs/filosofia.md).
+Para entender la filosofía del proyecto antes de contribuir, lee [`docs/filosofia`](https://cuervolu.github.io/piola/filosofia/).
