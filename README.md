@@ -1,5 +1,9 @@
 # Piola
 
+<p align="center">
+  <img src="assets/demo.gif" alt="Demo del REPL de Piola" width="700" />
+</p>
+
 Piola es un lenguaje de programación de propósito general, de tipado dinámico, implementado en Rust. Nació con dos objetivos que no se contradicen: ser una herramienta de aprendizaje sobre implementación de lenguajes, y tener una identidad chilena genuina.
 
 No es un lenguaje de producción (todavía). Es un lenguaje para entender qué pasa por debajo, cómo un lexer convierte texto en tokens, cómo un parser construye un árbol, cómo un intérprete le da vida a ese árbol. Y todo eso, con la cadencia y el humor del famoso español chileno.
@@ -47,7 +51,7 @@ piola update
 Si prefieres no usar los scripts, descarga el binario para tu plataforma directamente desde [GitHub Releases](https://github.com/cuervolu/piola/releases/latest) y agrégalo a tú `PATH`.
 
 | Plataforma            | Archivo                                         |
-|-----------------------|-------------------------------------------------|
+| --------------------- | ----------------------------------------------- |
 | macOS (Apple Silicon) | `piola-vX.Y.Z-aarch64-apple-darwin.tar.gz`      |
 | macOS (Intel)         | `piola-vX.Y.Z-x86_64-apple-darwin.tar.gz`       |
 | Linux x86_64          | `piola-vX.Y.Z-x86_64-unknown-linux-gnu.tar.gz`  |
@@ -65,7 +69,7 @@ piola programa.cl  # ejecuta un archivo
 
 ## El nombre
 
-*Piola* en Chile tiene varios significados según el contexto. Puede ser alguien tranquilo y hábil, algo que funciona bien sin hacer bulla, o simplemente un elogio: "quedó piola".
+_Piola_ en Chile tiene varios significados según el contexto. Puede ser alguien tranquilo y hábil, algo que funciona bien sin hacer bulla, o simplemente un elogio: "quedó piola".
 
 El lenguaje aspira a ser las tres cosas: tranquilo de leer, hábil en lo que hace, y que cuando algo funciona, simplemente funcione, sin aspavientos.
 
@@ -75,7 +79,7 @@ Además, un restaurante que me gusta se llama así, ojalá no me demanden.
 
 Piola está pensado para quien quiere entender cómo funcionan los lenguajes de programación por dentro, sin necesitar un doctorado para arrancar.
 
-Si alguna vez te preguntaste cómo hace Python para saber que `3 + 4 * 2` es `11` y no `14`, qué es exactamente un *scope*, cómo funciona un garbage collector, o qué pasa entre que escribes código y la máquina lo ejecuta — Piola está construido para que puedas responder esas preguntas leyendo su código fuente.
+Si alguna vez te preguntaste cómo hace Python para saber que `3 + 4 * 2` es `11` y no `14`, qué es exactamente un _scope_, cómo funciona un garbage collector, o qué pasa entre que escribes código y la máquina lo ejecuta — Piola está construido para que puedas responder esas preguntas leyendo su código fuente.
 
 El intérprete está escrito en Rust, es deliberadamente simple, y cada fase del pipeline existe como un módulo separado y legible. No asumimos conocimiento de teoría formal de lenguajes. Asumimos que sabes programar y tienes curiosidad.
 
