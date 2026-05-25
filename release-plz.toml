@@ -7,3 +7,7 @@ pr_labels = ["release"]
 publish = false
 semver_check = false
 dependencies_update = true
+
+[[package]]
+name = "piola-cli"
+changelog_update = false # solo el workspace genera changelog
