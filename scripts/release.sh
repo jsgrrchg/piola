@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/release.sh — Gestiona tags de release para Piola
+# scripts/release.sh — Gestiona tags de release para WN++
 # Uso:
 #   ./scripts/release.sh create v0.2.0        # crea y pushea el tag
 #   ./scripts/release.sh delete v0.2.0        # borra local y remoto
@@ -76,7 +76,7 @@ cmd_create() {
     msg=$(git log -1 --format="%s" HEAD)
     info "Commit: $commit — $msg"
 
-    git tag -a "$tag" -m "Piola $tag"
+    git tag -a "$tag" -m "WN++ $tag"
     info "Tag creado localmente"
 
     git push origin main --follow-tags
@@ -84,7 +84,7 @@ cmd_create() {
 
     section "¡Listo!"
     printf "  Tag ${BOLD}%s${RESET} creado y pusheado.\n" "$tag"
-    printf "  Revisa el pipeline en: https://github.com/cuervolu/piola/actions\n\n"
+    printf "  Revisa el pipeline en: https://github.com/cuervolu/wn/actions\n\n"
 }
 
 cmd_delete() {
@@ -119,7 +119,7 @@ cmd_delete() {
         section "¡Listo!"
         printf "  Tag ${BOLD}%s${RESET} eliminado.\n\n" "$tag"
         warn "Si había un Release en GitHub, bórralo manualmente:"
-        printf "  https://github.com/cuervolu/piola/releases/tag/%s\n\n" "$tag"
+        printf "  https://github.com/cuervolu/wn/releases/tag/%s\n\n" "$tag"
     fi
 }
 

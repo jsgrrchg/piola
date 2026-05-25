@@ -1,16 +1,16 @@
 ---
 title: Variables y Constantes
-description: wea y duro, cómo declarar, asignar y entender el scope en Piola.
+description: wea y duro, cómo declarar, asignar y entender el scope en WN++.
 ---
 
 import { Aside, Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
 
-En Piola hay dos formas de guardar un valor: `wea` para cosas que pueden cambiar, y `duro` para cosas que no.
+En WN++ hay dos formas de guardar un valor: `wea` para cosas que pueden cambiar, y `duro` para cosas que no.
 
 
 ## `wea` — variable mutable
 
-```piola
+```wn
 wea nombre = "Claudia Herrera"
 wea edad   = 38
 wea casada = verdad
@@ -18,30 +18,30 @@ wea casada = verdad
 
 Una `wea` puede cambiar de valor en cualquier momento:
 
-```piola
+```wn
 wea presidente = "Pinochet"
 presidente = "Aylwin"  // válido, la wea cambia
 ```
 
 Y también puede cambiar de *tipo*:
 
-```piola
+```wn
 wea estado = "soltero"   // texto
-estado = 42              // ahora es número, Piola no se queja
+estado = 42              // ahora es número, WN++ no se queja
 estado = verdad          // ahora es booleano
 ```
 
 <Aside type="caution">
-  El tipado dinámico es conveniente, pero con poder viene responsabilidad. Si después haces `estado + 10` y `estado` resulta ser `"casado"`, Piola te va a retar.
+  El tipado dinámico es conveniente, pero con poder viene responsabilidad. Si después haces `estado + 10` y `estado` resulta ser `"casado"`, WN++ te va a retar.
 </Aside>
 
 ---
 
 ## `duro` — constante inmutable
 
-Usa `duro` cuando el valor no debe cambiar nunca. Piola lo hace cumplir.
+Usa `duro` cuando el valor no debe cambiar nunca. WN++ lo hace cumplir.
 
-```piola
+```wn
 duro TEMPORADAS_LOS_80 = 7
 duro PI                = 3.1415
 duro GRITO_DE_CONDORITO = "¡Plop!"
@@ -49,7 +49,7 @@ duro GRITO_DE_CONDORITO = "¡Plop!"
 
 Intentar modificar una constante es un error de runtime:
 
-```piola
+```wn
 duro campeón = "Colo-Colo"
 campeón = "La U"  // Error: 'campeón' es duro, no lo podí cambiar.
 ```
@@ -61,9 +61,9 @@ campeón = "La U"  // Error: 'campeón' es duro, no lo podí cambiar.
 
 ## Scope de bloque
 
-Las variables en Piola tienen **alcance de bloque** — solo existen dentro del `{}` donde fueron declaradas.
+Las variables en WN++ tienen **alcance de bloque** — solo existen dentro del `{}` donde fueron declaradas.
 
-```piola
+```wn
 wea sospechoso = "Pancho"
 
 cachai (sospechoso == "Pancho") {
@@ -76,7 +76,7 @@ altiro(coartada)  // Error: La wea 'coartada' no existe papito.
 
 Pero una `wea` declarada afuera sí es visible desde adentro — y se puede modificar:
 
-```piola
+```wn
 wea puntaje = 0
 
 para (episodio en [1, 2, 3, 4, 5]) {
@@ -92,7 +92,7 @@ altiro(puntaje)  // → 50
 
 Cada declaración va en su propia línea. No hay destructuring todavía, pero la lectura es limpia:
 
-```piola
+```wn
 // Personajes de Los 80
 wea papá   = "Ernesto"
 wea mamá   = "Ana"
@@ -117,17 +117,17 @@ duro BARRIO = "La Florida"
 <Tabs>
   <TabItem label="Usar antes de declarar">
 
-```piola
+```wn
 altiro(personaje)           // Error: La wea 'personaje' no existe papito.
 wea personaje = "Condorito"
 ```
 
-Piola lee de arriba hacia abajo. No hay hoisting.
+WN++ lee de arriba hacia abajo. No hay hoisting.
 
   </TabItem>
   <TabItem label="Olvidar el wea">
 
-```piola
+```wn
 nombre = "Yayita"  // Error: La wea 'nombre' no existe papito.
 ```
 
@@ -136,7 +136,7 @@ Toda variable debe declararse con `wea` o `duro` antes de usarse.
   </TabItem>
   <TabItem label="Modificar una constante">
 
-```piola
+```wn
 duro VILLANO = "Pepe Cortisona"
 VILLANO = "Washington"  // Error: 'VILLANO' es duro, no lo podí cambiar.
 ```

@@ -1,0 +1,5 @@
+---
+source: crates/wn/tests/interpreter_runtime.rs
+expression: stdout
+---
+3.14

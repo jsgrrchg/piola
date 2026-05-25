@@ -4,8 +4,8 @@ use std::{
     rc::Rc,
 };
 
-use piola::{
-    error::PiolaError,
+use wn::{
+    error::WnError,
     interpreter::{Interprete, value::Valor},
     lexer::tokenizar,
     parser::parsear,
@@ -33,14 +33,14 @@ impl Write for CapturaSalida {
     }
 }
 
-pub fn run_program(src: &str) -> Result<Valor, PiolaError> {
+pub fn run_program(src: &str) -> Result<Valor, WnError> {
     let tokens = tokenizar(src)?;
     let stmts = parsear(tokens, src, "<test>")?;
     let mut interprete = Interprete::nuevo();
     interprete.correr(&stmts)
 }
 
-pub fn run_program_with_output(src: &str) -> (Result<Valor, PiolaError>, String) {
+pub fn run_program_with_output(src: &str) -> (Result<Valor, WnError>, String) {
     let captura = CapturaSalida::default();
     let tokens = match tokenizar(src) {
         Ok(tokens) => tokens,
@@ -55,6 +55,6 @@ pub fn run_program_with_output(src: &str) -> (Result<Valor, PiolaError>, String)
     (resultado, captura.contenido())
 }
 
-pub fn render_error(err: &PiolaError) -> String {
+pub fn render_error(err: &WnError) -> String {
     err.to_string()
 }

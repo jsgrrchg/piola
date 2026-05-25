@@ -1,5 +1,5 @@
 name: "Feature request"
-description: "¿Tienes una idea para mejorar Piola? Pasa pa aca."
+description: "¿Tienes una idea para mejorar WN++? Pasa pa aca."
 title: "[Feature]: "
 labels: ["enhancement", "triage"]
 body:
@@ -30,8 +30,8 @@ body:
     id: example
     attributes:
       label: "Ejemplo de uso (.cl)"
-      description: "¿Cómo se vería en código Piola? No tiene que compilar, es para ilustrar la idea."
-      render: "piola"
+      description: "¿Cómo se vería en código WN++? No tiene que compilar, es para ilustrar la idea."
+      render: "wn"
       placeholder: |
         // Así se usaría la nueva feature
         wea resultado = algo_nuevo(x, y)
@@ -58,7 +58,7 @@ body:
         - "Standard library (built-ins)"
         - "Manejo de errores"
         - "REPL"
-        - "CLI (piola run, piola fmt, etc.)"
+        - "CLI (wn, wn fmt, etc.)"
         - "Tooling / ecosistema"
         - "Documentación"
         - "Otro"
@@ -69,7 +69,7 @@ body:
     id: phase
     attributes:
       label: "¿En qué fase del roadmap encajaría?"
-      description: "Referencia al [roadmap oficial](https://cuervolu.github.io/piola/roadmap/)."
+      description: "Referencia al [roadmap oficial](https://cuervolu.github.io/wn/roadmap/)."
       options:
         - "v0.2 — El lenguaje completo"
         - "v0.3 — Tooling"

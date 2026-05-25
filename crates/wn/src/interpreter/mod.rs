@@ -11,7 +11,7 @@ use std::{
 
 use crate::{
     ast::{Expr, OpBin, OpUn, Stmt},
-    error::PiolaError,
+    error::WnError,
 };
 
 use env::Entorno;
@@ -105,19 +105,19 @@ impl Interprete {
         }
     }
 
-    pub fn correr(&mut self, stmts: &[Stmt]) -> Result<Valor, PiolaError> {
+    pub fn correr(&mut self, stmts: &[Stmt]) -> Result<Valor, WnError> {
         self.eval_stmts(stmts, Rc::clone(&self.global))
             .map_err(|e| match e {
-                RuntimeError::Retorno(_) => PiolaError::Runtime {
+                RuntimeError::Retorno(_) => WnError::Runtime {
                     mensaje: "'devolver' solo puede usarse dentro de una pega papito.".to_string(),
                 },
-                RuntimeError::Cortala => PiolaError::Runtime {
+                RuntimeError::Cortala => WnError::Runtime {
                     mensaje: "'cortala' solo tiene sentido dentro de un bucle, po.".to_string(),
                 },
-                RuntimeError::Sigue => PiolaError::Runtime {
+                RuntimeError::Sigue => WnError::Runtime {
                     mensaje: "'sigue' solo tiene sentido dentro de un bucle, po.".to_string(),
                 },
-                _ => PiolaError::Runtime {
+                _ => WnError::Runtime {
                     mensaje: e.to_string(),
                 },
             })

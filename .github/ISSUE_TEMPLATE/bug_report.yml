@@ -12,9 +12,9 @@ body:
   - type: input
     id: version
     attributes:
-      label: "Versión de Piola"
-      description: "Corre `piola --version` y pega el resultado acá."
-      placeholder: "ej: piola 0.1.0"
+      label: "Versión de WN++"
+      description: "Corre `wn --version` y pega el resultado acá."
+      placeholder: "ej: wn 0.1.0"
     validations:
       required: true
 
@@ -22,7 +22,7 @@ body:
     id: os
     attributes:
       label: "Sistema operativo / target"
-      description: "¿Desde qué plataforma estás corriendo Piola?"
+      description: "¿Desde qué plataforma estás corriendo WN++?"
       options:
         - "macOS — Apple Silicon (aarch64-apple-darwin)"
         - "macOS — Intel (x86_64-apple-darwin)"
@@ -37,12 +37,12 @@ body:
     id: install_method
     attributes:
       label: "Método de instalación"
-      description: "¿Cómo instalaste Piola?"
+      description: "¿Cómo instalaste WN++?"
       options:
         - "Script de instalación"
         - "Descarga manual del release"
         - "Compilado desde el código fuente"
-        - "piola update"
+        - "wn update"
     validations:
       required: true
   - type: textarea
@@ -50,7 +50,7 @@ body:
     attributes:
       label: "¿Qué pasó?"
       description: "Descripción clara y concisa del bug."
-      placeholder: "Al correr X, Piola hace Y en vez de Z."
+      placeholder: "Al correr X, WN++ hace Y en vez de Z."
     validations:
       required: true
 
@@ -61,7 +61,7 @@ body:
       description: "¿Cómo llegamos al bug? Sé específico."
       placeholder: |
         1. Crea un archivo `bug.cl` con el siguiente contenido
-        2. Corre `piola run bug.cl`
+        2. Corre `wn bug.cl`
         3. Observa el error
     validations:
       required: true
@@ -69,9 +69,9 @@ body:
   - type: textarea
     id: snippet
     attributes:
-      label: "Código Piola"
+      label: "Código WN++"
       description: "El fragmento mínimo que reproduce el bug. Se formateará como código automáticamente."
-      render: "piola"
+      render: "wn"
       placeholder: |
         wea x = 10
         altiro(x + "wena")  // ← acá caga
@@ -110,5 +110,5 @@ body:
       options:
         - label: "Busqué issues existentes y no encontré uno igual."
           required: true
-        - label: "Probé con la última versión de Piola."
+        - label: "Probé con la última versión de WN++."
           required: false

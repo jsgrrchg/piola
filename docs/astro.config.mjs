@@ -1,19 +1,19 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import piolaGrammar from './src/grammars/piola.tmLanguage.json';
+import wnGrammar from './src/grammars/wn.tmLanguage.json';
 
 export default defineConfig({
   integrations: [
     starlight({
-      title: 'Piola',
+      title: 'WN++',
       description: 'Un lenguaje de programación chileno, simple y directo.',
       favicon: './src/assets/logo.svg',
       logo: {
         src: './src/assets/logo.svg',  
       },
 
-     social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/cuervolu/piola' }],
+     social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/cuervolu/wn' }],
 
       customCss: ['./src/styles/custom.css'],
 
@@ -21,13 +21,13 @@ export default defineConfig({
       expressiveCode: {
         themes: ['one-dark-pro'],
  		shiki: {                 
-          langs: [piolaGrammar],  
+          langs: [wnGrammar],
         },
       },
 
       sidebar: [
         {
-          label: '¿Qué es Piola?',
+          label: '¿Qué es WN++?',
           items: [
             { label: 'Introducción', link: '/' },
             { label: 'Instalación', link: '/instalacion' },
@@ -60,5 +60,5 @@ export default defineConfig({
   ],
 
   site: 'https://cuervolu.github.io',
-  base: '/piola',
+  base: '/wn',
 });

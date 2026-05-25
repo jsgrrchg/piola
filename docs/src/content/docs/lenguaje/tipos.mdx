@@ -1,11 +1,11 @@
 ---
 title: Tipos de Datos
-description: numero, texto, booleano, nada, lista y mapa — los tipos de Piola y cómo usarlos.
+description: numero, texto, booleano, nada, lista y mapa — los tipos de WN++ y cómo usarlos.
 ---
 
 import { Aside, Tabs, TabItem, Card, CardGrid, Badge } from '@astrojs/starlight/components';
 
-Piola es de **tipado dinámico**: una variable puede guardar cualquier tipo de valor, y ese tipo puede cambiar. No declaras el tipo, Piola lo infiere. Cuando algo no cuadra, te lo dice en runtime.
+WN++ es de **tipado dinámico**: una variable puede guardar cualquier tipo de valor, y ese tipo puede cambiar. No declaras el tipo, WN++ lo infiere. Cuando algo no cuadra, te lo dice en runtime.
 
 ---
 
@@ -13,9 +13,9 @@ Piola es de **tipado dinámico**: una variable puede guardar cualquier tipo de v
 
 ### `numero` <Badge text="f64" variant="note" />
 
-Todos los números en Piola son punto flotante de 64 bits. No hay distinción entre entero y decimal.
+Todos los números en WN++ son punto flotante de 64 bits. No hay distinción entre entero y decimal.
 
-```piola
+```wn
 wea goles_alexis  = 47       // entero
 wea promedio_gol  = 0.72     // decimal
 wea deuda_fifa    = 1.5e6    // notación científica → 1500000
@@ -25,7 +25,7 @@ altiro(cachar(goles_alexis))  // → numero
 
 Las operaciones aritméticas estándar:
 
-```piola
+```wn
 wea partidos   = 180
 wea victorias  = 98
 wea porcentaje = victorias / partidos * 100
@@ -33,7 +33,7 @@ wea porcentaje = victorias / partidos * 100
 altiro(porcentaje)  // → 54.44444444444444
 ```
 
-```piola
+```wn
 wea minutos   = 94
 wea descuento = minutos % 90  // módulo
 altiro(descuento)              // → 4
@@ -42,7 +42,7 @@ altiro(descuento)              // → 4
 <Aside type="caution">
   División por cero es un error de runtime:
 
-  ```piola
+  ```wn
   wea x = 10 / 0
   // Error: Weon, no se puede dividir por cero.
   ```
@@ -54,7 +54,7 @@ altiro(descuento)              // → 4
 
 Cadenas de caracteres entre comillas dobles o simples. Se concatenan con `+`.
 
-```piola
+```wn
 wea jugador  = "Arturo Vidal"
 wea apodo    = 'El Rey'
 wea completo = jugador + " — " + apodo
@@ -64,7 +64,7 @@ altiro(completo)  // → Arturo Vidal — El Rey
 
 Texto con números se convierte automáticamente al concatenar:
 
-```piola
+```wn
 wea nombre  = "Gary Medel"
 wea tarjetas = 15
 
@@ -74,7 +74,7 @@ altiro(nombre + " tiene " + tarjetas + " tarjetas amarillas")
 
 Secuencias de escape:
 
-```piola
+```wn
 altiro("Primera línea\nSegunda línea")
 altiro("Campeón:\t\"La Roja\"")
 ```
@@ -85,7 +85,7 @@ altiro("Campeón:\t\"La Roja\"")
 
 Solo dos valores posibles: `verdad` y `falso`.
 
-```piola
+```wn
 wea es_titular     = verdad
 wea esta_lesionado = falso
 wea puede_jugar    = es_titular y no esta_lesionado
@@ -95,7 +95,7 @@ altiro(puede_jugar)  // → verdad
 
 Las comparaciones devuelven booleanos:
 
-```piola
+```wn
 wea goles_chile   = 3
 wea goles_bolivia = 0
 
@@ -114,7 +114,7 @@ altiro(goles_chile != goles_bolivia)  // → verdad
 | `""`        | ✓     |
 | Todo lo demás | ✗   |
 
-```piola
+```wn
 cachai (0) {
   altiro("nunca llega acá")
 }
@@ -134,7 +134,7 @@ cachai ("Colo-Colo") {
 
 Representa la ausencia de valor. Es lo que devuelve una función que no retorna nada explícitamente.
 
-```piola
+```wn
 wea transferencia = nada  // aún no se concreta
 
 cachai (transferencia == nada) {
@@ -154,7 +154,7 @@ cachai (transferencia == nada) {
 
 Colección ordenada de valores. Se define con `[]`. Puede mezclar tipos.
 
-```piola
+```wn
 wea plantel = ["Bravo", "Medel", "Maripán", "Isla", "Alexis", "Vidal"]
 wea numeros = [1, 2, 3, 4, 5]
 wea mixta   = [1, "dos", verdad, nada]  // válido
@@ -162,7 +162,7 @@ wea mixta   = [1, "dos", verdad, nada]  // válido
 
 **Acceso por índice** — base cero:
 
-```piola
+```wn
 altiro(plantel[0])   // → Bravo
 altiro(plantel[2])   // → Maripán
 altiro(plantel[-1])  // → Vidal (índice negativo: desde el final)
@@ -170,20 +170,20 @@ altiro(plantel[-1])  // → Vidal (índice negativo: desde el final)
 
 **Modificar un elemento:**
 
-```piola
+```wn
 plantel[4] = "Brereton"
 altiro(plantel[4])  // → Brereton
 ```
 
 **Largo:**
 
-```piola
+```wn
 altiro(largo(plantel))  // → 6
 ```
 
 **Iterar:**
 
-```piola
+```wn
 para (jugador en plantel) {
   altiro("  " + jugador)
 }
@@ -191,7 +191,7 @@ para (jugador en plantel) {
 
 **Listas anidadas:**
 
-```piola
+```wn
 wea fixture = [
   ["Chile", "Bolivia"],
   ["Argentina", "Perú"],
@@ -205,7 +205,7 @@ altiro(fixture[0][1])   // → Bolivia
 <Aside type="caution">
   Acceder a un índice que no existe es un error:
 
-  ```piola
+  ```wn
   wea lista = [1, 2, 3]
   altiro(lista[10])
   // Error: Te fuiste al chancho, el índice 10 no existe en la lista (largo: 3).
@@ -218,7 +218,7 @@ altiro(fixture[0][1])   // → Bolivia
 
 Colección de pares clave-valor. Se define con `{}`. Las claves son texto.
 
-```piola
+```wn
 wea jugador = {
   "nombre":   "Charles Aránguiz",
   "posicion": "mediocampista",
@@ -229,7 +229,7 @@ wea jugador = {
 
 **Acceso por clave:**
 
-```piola
+```wn
 altiro(jugador["nombre"])    // → Charles Aránguiz
 altiro(jugador["copas"])     // → 2
 altiro(jugador["clubes"][0]) // → La U
@@ -237,20 +237,20 @@ altiro(jugador["clubes"][0]) // → La U
 
 **Modificar un valor:**
 
-```piola
+```wn
 jugador["copas"] = 3
 ```
 
 **Clave inexistente:**
 
-```piola
+```wn
 altiro(jugador["sueldo"])
 // Error: La clave 'sueldo' no existe papito.
 ```
 
 **Mapas anidados:**
 
-```piola
+```wn
 wea seleccion = {
   "pais":    "Chile",
   "apodo":   "La Roja",
@@ -269,7 +269,7 @@ altiro(seleccion["tecnico"]["nombre"])  // → Ricardo Gareca
 
 La función nativa `cachar()` devuelve el tipo de cualquier valor como texto:
 
-```piola
+```wn
 altiro(cachar(42))           // → numero
 altiro(cachar("La Roja"))    // → texto
 altiro(cachar(verdad))       // → booleano
@@ -281,7 +281,7 @@ altiro(cachar(pega x() {}))  // → pega
 
 Útil para hacer lógica condicional según el tipo:
 
-```piola
+```wn
 pega describir(valor) {
   wea tipo = cachar(valor)
 
@@ -317,7 +317,7 @@ altiro(describir(nada))            // → un nada
     Enteros y decimales son el mismo tipo. Aritmética estándar con `+`, `-`, `*`, `/`, `%`.
   </Card>
   <Card title="texto" icon="approve-check">
-    `"wena"`, `'piola'`
+    `"wena"`, `'wn'`
 
     Concatenación con `+`. Conversión automática al concatenar con números.
   </Card>

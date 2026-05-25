@@ -2,13 +2,15 @@
 [CmdletBinding()]
 param(
     [string]$Version = "latest", # Sobreescribe: .\install.ps1 -Version v0.1.0
-    [string]$InstallDir = "$env:USERPROFILE\.piola\bin"
+    [string]$InstallDir = "$env:USERPROFILE\.wn\bin"
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$PIOLA_REPO = "cuervolu/piola"
+$WN_REPO = "cuervolu/wn"
+$WN_PACKAGE = "wn-cli"
+$LegacyPiolaBin = "$env:USERPROFILE\.piola\bin\piola.exe"
 
 function Write-Info
 {
@@ -29,7 +31,7 @@ function Write-Fail
 
 function Get-LatestVersion
 {
-    $url = "https://api.github.com/repos/$PIOLA_REPO/releases/latest"
+    $url = "https://api.github.com/repos/$WN_REPO/releases/latest"
     try
     {
         $response = Invoke-RestMethod -Uri $url -Method Get
@@ -41,7 +43,7 @@ function Get-LatestVersion
     }
 }
 
-function Install-Piola
+function Install-Wn
 {
     Write-Section "Detectando plataforma"
 
@@ -63,9 +65,9 @@ function Install-Piola
     }
     Write-Info "Versión: $resolvedVersion"
 
-    $archiveUrl = "https://github.com/$PIOLA_REPO/releases/download/$resolvedVersion/piola-$resolvedVersion-$target.zip"
+    $archiveUrl = "https://github.com/$WN_REPO/releases/download/$resolvedVersion/$WN_PACKAGE-$target.zip"
 
-    Write-Section "Descargando Piola $resolvedVersion"
+    Write-Section "Descargando WN++ $resolvedVersion"
     Write-Info "Desde: $archiveUrl"
 
     $tmpDir = [System.IO.Path]::GetTempPath() + [System.Guid]::NewGuid().ToString()
@@ -73,7 +75,7 @@ function Install-Piola
 
     try
     {
-        $archivePath = Join-Path $tmpDir "piola.zip"
+        $archivePath = Join-Path $tmpDir "wn.zip"
 
         # TLS 1.2+
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -85,8 +87,8 @@ function Install-Piola
 
         New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
 
-        $sourceBin = Join-Path $tmpDir "piola.exe"
-        $destBin = Join-Path $InstallDir "piola.exe"
+        $sourceBin = Join-Path $tmpDir "wn.exe"
+        $destBin = Join-Path $InstallDir "wn.exe"
         Move-Item -Path $sourceBin -Destination $destBin -Force
         Write-Info "Binario instalado en: $destBin"
 
@@ -94,6 +96,16 @@ function Install-Piola
     finally
     {
         Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue
+    }
+}
+
+function Write-LegacyPiolaWarning
+{
+    if (Test-Path $LegacyPiolaBin)
+    {
+        Write-Warn "Detecté una instalación antigua de Piola en: $LegacyPiolaBin"
+        Write-Warn "WN++ usa el comando 'wn' y se instala aparte; 'piola update' no migra al nuevo nombre."
+        Write-Warn "Cuando confirmes que 'wn' funciona, puedes eliminar la instalación antigua manualmente."
     }
 }
 
@@ -123,18 +135,18 @@ function Add-ToPath
 
 function Test-Installation
 {
-    $binary = Join-Path $InstallDir "piola.exe"
+    $binary = Join-Path $InstallDir "wn.exe"
 
     if (Test-Path $binary)
     {
         Write-Section "¡Listo!"
         Write-Host ""
-        Write-Host "  Piola instalado exitosamente." -ForegroundColor Green
+        Write-Host "  WN++ instalado exitosamente." -ForegroundColor Green
         Write-Host ""
-        Write-Host "  Ejecuta 'piola' para abrir el REPL"
-        Write-Host "  o 'piola programa.cl' para ejecutar un archivo"
+        Write-Host "  Ejecuta 'wn' para abrir el REPL"
+        Write-Host "  o 'wn programa.cl' para ejecutar un archivo"
         Write-Host ""
-        Write-Warn "Puede que necesites abrir una nueva terminal para usar 'piola' directamente."
+        Write-Warn "Puede que necesites abrir una nueva terminal para usar 'wn' directamente."
     }
     else
     {
@@ -143,10 +155,11 @@ function Test-Installation
 }
 
 Write-Host ""
-Write-Host "Bienvenido al instalador de Piola" -ForegroundColor Cyan -NoNewline
+Write-Host "Bienvenido al instalador de WN++" -ForegroundColor Cyan -NoNewline
 Write-Host " (Windows)" -ForegroundColor Gray
 Write-Host ""
 
-Install-Piola
+Write-LegacyPiolaWarning
+Install-Wn
 Add-ToPath
 Test-Installation

@@ -1,14 +1,14 @@
 [package]
-name = "piola"
+name = "wn-cli"
 version = "0.1.0"
 edition = "2024"
-description = "CLI and REPL for the Piola programming language"
-repository = "https://github.com/cuervolu/piola"
+description = "CLI and REPL for the WN++ programming language"
+repository = "https://github.com/cuervolu/wn"
 license = "MIT"
-keywords = ["piola", "language", "interpreter", "cli", "chile"]
+keywords = ["wn", "language", "interpreter", "cli", "chile"]
 
 [[bin]]
-name = "piola"
+name = "wn"
 path = "src/main.rs"
 
 [dependencies]
@@ -19,5 +19,6 @@ self_update = { version = "0.44", features = [
     "archive-tar",
     "archive-zip",
     "compression-flate2",
+    "compression-zip-deflate",
 ] }
-piola = { path = "../piola", package = "piola-core" }
+wn = { path = "../wn" }

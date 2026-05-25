@@ -7,8 +7,8 @@ use miette::IntoDiagnostic;
 use rustyline::{DefaultEditor, error::ReadlineError};
 
 use crate::updater::run_update;
-use piola::{
-    error::PiolaError,
+use wn::{
+    error::WnError,
     interpreter::{Interprete, value::Valor},
     lexer::{Lexer, tokenizar},
     parser::parsear,
@@ -16,8 +16,8 @@ use piola::{
 
 #[derive(Parser)]
 #[command(
-    name = "piola",
-    about = "El intérprete del lenguaje Piola",
+    name = "wn",
+    about = "El intérprete del lenguaje WN++",
     version,
     long_version = concat!(
     env!("CARGO_PKG_VERSION"), "\n",
@@ -34,7 +34,7 @@ struct Cli {
 
 #[derive(clap::Subcommand)]
 enum Command {
-    /// Busca e instala la última versión de Piola
+    /// Busca e instala la última versión de WN++
     Update {
         /// Fuerza la actualización aunque ya tengas la última versión
         #[arg(long)]
@@ -84,10 +84,10 @@ fn run_repl() {
         }
     };
 
-    let _ = rl.load_history(".piola_history");
+    let _ = rl.load_history(".wn_history");
 
     let mut interp = Interprete::nuevo();
-    println!("Piola v0.1 — escribe 'chao' para salir");
+    println!("WN++ v0.1 — escribe 'chao' para salir");
 
     loop {
         match rl.readline(">>> ") {
@@ -127,9 +127,9 @@ fn run_repl() {
         }
     }
 
-    let _ = rl.save_history(".piola_history");
+    let _ = rl.save_history(".wn_history");
 }
 
-fn eprint_error(err: PiolaError) {
+fn eprint_error(err: WnError) {
     eprintln!("{:?}", miette::Report::new(err));
 }

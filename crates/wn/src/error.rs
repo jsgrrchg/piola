@@ -2,9 +2,9 @@ use miette::{Diagnostic, NamedSource, SourceSpan};
 use thiserror::Error;
 
 #[derive(Debug, Error, Diagnostic)]
-pub enum PiolaError {
+pub enum WnError {
     #[error("Error léxico")]
-    #[diagnostic(code(piola::lexico), help("Revisa el carácter problemático"))]
+    #[diagnostic(code(wn::lexico), help("Revisa el carácter problemático"))]
     Lexico {
         #[source_code]
         src: NamedSource<String>,
@@ -14,7 +14,7 @@ pub enum PiolaError {
     },
 
     #[error("Error de sintaxis")]
-    #[diagnostic(code(piola::sintaxis))]
+    #[diagnostic(code(wn::sintaxis))]
     Sintaxis {
         #[source_code]
         src: NamedSource<String>,
@@ -24,6 +24,6 @@ pub enum PiolaError {
     },
 
     #[error("Error en tiempo de ejecución: {mensaje}")]
-    #[diagnostic(code(piola::runtime), help("Revisa la lógica de tu programa ctm"))]
+    #[diagnostic(code(wn::runtime), help("Revisa la lógica de tu programa ctm"))]
     Runtime { mensaje: String },
 }

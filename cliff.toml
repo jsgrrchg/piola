@@ -1,6 +1,6 @@
 [remote.github]
 owner = "cuervolu"
-repo = "piola"
+repo = "wn"
 
 [changelog]
 header = """
@@ -26,7 +26,7 @@ body = """
 {% for commit in commits %}\
     - {{ commit.message | upper_first }}\
     {% if commit.github.username %} por @{{ commit.github.username }}{% endif %}\
-    {% if commit.github.pr_number %} ([#{{ commit.github.pr_number }}](https://github.com/cuervolu/piola/pull/{{ commit.github.pr_number }})){% endif %}
+    {% if commit.github.pr_number %} ([#{{ commit.github.pr_number }}](https://github.com/cuervolu/wn/pull/{{ commit.github.pr_number }})){% endif %}
 {% endfor %}
 {% endfor %}\n
 """
@@ -36,10 +36,10 @@ footer = """
     {% if release.version %}\
         {% if release.previous.version %}\
             [{{ release.version | trim_start_matches(pat="v") }}]: \
-                https://github.com/cuervolu/piola/compare/{{ release.previous.version }}..{{ release.version }}
+                https://github.com/cuervolu/wn/compare/{{ release.previous.version }}..{{ release.version }}
         {% endif %}\
     {% else %}\
-        [unreleased]: https://github.com/cuervolu/piola/compare/\
+        [unreleased]: https://github.com/cuervolu/wn/compare/\
             {% if releases | length > 1 %}\
                 {{ releases | nth(n=1) | get(key="version") }}\
             {% endif %}..HEAD

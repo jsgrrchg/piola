@@ -1,15 +1,15 @@
 ---
 title: Funciones
-description: pega — cómo definir, llamar y componer funciones en Piola.
+description: pega — cómo definir, llamar y componer funciones en WN++.
 ---
 
 import { Aside, Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
 
-En Piola, las funciones se llaman `pega`. Defines un bloque de trabajo, le das un nombre, y después lo mandas a hacer.
+En WN++, las funciones se llaman `pega`. Defines un bloque de trabajo, le das un nombre, y después lo mandas a hacer.
 
 ## Declaración básica
 
-```piola
+```wn
 pega saludar(nombre) {
   "Wena, " + nombre + "!"
 }
@@ -24,7 +24,7 @@ La sintaxis es `pega nombre(parámetros) { cuerpo }`.
 
 La **última expresión** del cuerpo es el valor que devuelve la función. No necesitas escribir nada extra:
 
-```piola
+```wn
 pega titular(periodista, noticia) {
   periodista + " informa: " + noticia
 }
@@ -43,7 +43,7 @@ altiro(titular("Tulio Triviño", "¡Mañana es sábado!"))
 
 A veces necesitas salir antes del final. Usa `devolver`:
 
-```piola
+```wn
 pega pronostico_policarpo(temperatura) {
   cachai (temperatura > 100) {
     devolver "Señal de mal pronóstico, como siempre"
@@ -64,7 +64,7 @@ altiro(pronostico_policarpo(200))
 
 Una `pega` puede no recibir nada:
 
-```piola
+```wn
 pega es_hora_de_noticias() {
   altiro("¡Buenas noches!")
   altiro("Yo me llamo Tulio Triviño")
@@ -78,7 +78,7 @@ es_hora_de_noticias()
 
 ## Múltiples parámetros
 
-```piola
+```wn
 pega reporte_de_campo(reportera, lugar, noticia) {
   reportera + " desde " + lugar + ": " + noticia
 }
@@ -91,9 +91,9 @@ altiro(reporte_de_campo("Patana", "el desierto", "hace calor aquí"))
 
 ## Funciones como valores (Próximamente)
 
-Las funciones son ciudadanos de primera clase en Piola. Se pueden guardar en variables, pasar como argumentos, y retornar desde otras funciones.
+Las funciones son ciudadanos de primera clase en WN++. Se pueden guardar en variables, pasar como argumentos, y retornar desde otras funciones.
 
-```piola
+```wn
 // Guardada en una wea
 wea investigar = pega misterio(ser_vivo) {
   "El misterio de los seres vivos: ¿Por qué " + ser_vivo + " hace lo que hace?"
@@ -103,7 +103,7 @@ altiro(investigar("el oso"))
 // → El misterio de los seres vivos: ¿Por qué el oso hace lo que hace?
 ```
 
-```piola
+```wn
 // Pasada como argumento
 pega presentar(intro_fn, contenido) {
   wea intro = intro_fn()
@@ -124,7 +124,7 @@ altiro(presentar(intro_bodoque, "Hoy: los pingüinos"))
 
 Una `pega` puede llamarse a sí misma. El ejemplo clásico que confirma que el intérprete funciona:
 
-```piola
+```wn
 pega fibonacci(n) {
   cachai (n <= 1) {
     n
@@ -138,7 +138,7 @@ altiro(fibonacci(10))  // → 55
 
 Un ejemplo más 31 minutos:
 
-```piola
+```wn
 // Cuenta cuántas veces Maguito puede repetir una frase antes de que explote
 pega repetir(frase, veces) {
   cachai (veces == 0) {
@@ -162,7 +162,7 @@ repetir("¡Quiero hacer mi show!", 3)
 
 Una `pega` recuerda el entorno donde fue creada. Si una función interna referencia una variable de su función contenedora, la captura:
 
-```piola
+```wn
 pega crear_corresponsal(nombre) {
   pega reportar(noticia) {
     nombre + " reporta: " + noticia  // ← captura 'nombre' del exterior
@@ -193,7 +193,7 @@ altiro(juanin("Colo-Colo perdió otra vez"))
 <Tabs>
   <TabItem label="Argumentos incorrectos">
 
-```piola
+```wn
 pega titular(periodista, noticia) {
   periodista + ": " + noticia
 }
@@ -205,7 +205,7 @@ titular("Tulio")
   </TabItem>
   <TabItem label="Llamar algo que no es pega">
 
-```piola
+```wn
 wea nombre = "Calcetín con Rombos Man"
 nombre()
 // Error: 'texto' no es una pega papito.
@@ -214,7 +214,7 @@ nombre()
   </TabItem>
   <TabItem label="devolver fuera de una pega">
 
-```piola
+```wn
 devolver "esto no está dentro de nada"
 // Error: 'devolver' solo puede usarse dentro de una pega papito.
 ```
@@ -226,7 +226,7 @@ devolver "esto no está dentro de nada"
 
 ## Referencia rápida
 
-```piola
+```wn
 // Forma básica
 pega nombre(param1, param2) {
   // cuerpo

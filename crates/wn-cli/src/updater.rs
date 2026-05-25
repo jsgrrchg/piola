@@ -7,8 +7,9 @@ pub fn run_update(force: bool) -> miette::Result<()> {
 
     let status = self_update::backends::github::Update::configure()
         .repo_owner("cuervolu")
-        .repo_name("piola")
-        .bin_name("piola")
+        .repo_name("wn")
+        .identifier("wn-cli")
+        .bin_name("wn")
         .show_output(false)
         .show_download_progress(true)
         .current_version(current)

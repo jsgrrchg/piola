@@ -1,18 +1,18 @@
 ---
 title: Manejo de Errores
-description: ojo, cago y los errores de runtime — cómo Piola falla y cómo manejarlo.
+description: ojo, cago y los errores de runtime — cómo WN++ falla y cómo manejarlo.
 ---
 
 import { Aside, Tabs, TabItem, Card, CardGrid, Badge } from '@astrojs/starlight/components';
 
-En Piola hay dos categorías de cosas que pueden salir mal: los **errores de runtime** que el lenguaje lanza automáticamente, y los errores que tú capturas con `ojo`/`cago`. Ambos hablan chileno.
+En WN++ hay dos categorías de cosas que pueden salir mal: los **errores de runtime** que el lenguaje lanza automáticamente, y los errores que tú capturas con `ojo`/`cago`. Ambos hablan chileno.
 
 
 ## `ojo` / `cago` — try / catch
 
 Envuelve en `ojo` el código que puede fallar. Si algo explota, `cago` lo captura.
 
-```piola
+```wn
 ojo {
   wea resultado = 10 / 0
 } cago(error) {
@@ -23,7 +23,7 @@ ojo {
 
 `error` dentro del `cago` es un texto con el mensaje del error. Puedes llamarlo como quieras:
 
-```piola
+```wn
 ojo {
   altiro(lista_inexistente)
 } cago(e) {
@@ -34,11 +34,11 @@ ojo {
 
 ## Errores que se pueden capturar
 
-Cualquier error de runtime puede ser atrapado con `ojo`/`cago`. Estos son todos los que Piola puede lanzar:
+Cualquier error de runtime puede ser atrapado con `ojo`/`cago`. Estos son todos los que WN++ puede lanzar:
 
 ### Error de tipo
 
-```piola
+```wn
 ojo {
   wea x = "fósforos" + 42
 } cago(error) {
@@ -50,7 +50,7 @@ ojo {
 <Aside type="tip">
   Sumar texto con número funciona si el número va al lado del texto, es coerción intencional:
 
-  ```piola
+  ```wn
   altiro("Precio: " + 1500)  // → Precio: 1500  ✓
   altiro(1500 + " pesos")    // → 1500 pesos     ✓
   altiro("precio" + 1500 + "CLP")   // → precio1500CLP  ✓
@@ -58,14 +58,14 @@ ojo {
 
   Lo que no funciona es intentar operar aritméticamente:
 
-  ```piola
+  ```wn
   altiro("precio" * 2)  // Error ✗
   ```
 </Aside>
 
 ### Variable no definida
 
-```piola
+```wn
 ojo {
   altiro(boleta_electronica)
 } cago(error) {
@@ -76,7 +76,7 @@ ojo {
 
 ### División por cero
 
-```piola
+```wn
 ojo {
   wea promedio = 100 / 0
 } cago(error) {
@@ -87,7 +87,7 @@ ojo {
 
 ### Índice inválido
 
-```piola
+```wn
 wea fila_banco = ["señora Rosa", "don Lucho", "el cabro chico"]
 
 ojo {
@@ -100,7 +100,7 @@ ojo {
 
 ### Clave inexistente en mapa
 
-```piola
+```wn
 wea tramite = {"nombre": "certificado de residencia", "costo": 0}
 
 ojo {
@@ -113,7 +113,7 @@ ojo {
 
 ### Constante inmutable
 
-```piola
+```wn
 duro PRECIO_MICRO = 800
 
 ojo {
@@ -126,7 +126,7 @@ ojo {
 
 ### Argumentos incorrectos
 
-```piola
+```wn
 pega recargar_bip(monto) {
   "Recargando $" + monto
 }
@@ -141,7 +141,7 @@ ojo {
 
 ### Llamar algo que no es una función
 
-```piola
+```wn
 wea direccion = "Avenida Libertador Bernardo O'Higgins 1234"
 
 ojo {
@@ -158,7 +158,7 @@ ojo {
 
 Puedes anidar bloques para manejar errores en distintos niveles:
 
-```piola
+```wn
 // Simulando un trámite en el Registro Civil
 pega buscar_documento(rut) {
   cachai (rut == nada) {
@@ -190,7 +190,7 @@ ojo {
 
 Las señales de control de flujo no son errores — pasan a través del `ojo` sin ser capturadas:
 
-```piola
+```wn
 para (i en [1, 2, 3, 4, 5]) {
   ojo {
     cachai (i == 3) {
@@ -212,7 +212,7 @@ Lo mismo con `sigue` y `devolver` — son control de flujo, no errores.
 
 ## Errores de sintaxis y léxicos
 
-Estos ocurren **antes** de que el programa corra, no durante. No se pueden capturar con `ojo`/`cago` porque Piola ni llega a ejecutar el código.
+Estos ocurren **antes** de que el programa corra, no durante. No se pueden capturar con `ojo`/`cago` porque WN++ ni llega a ejecutar el código.
 
 ```
 // Este archivo no corre en absoluto:
@@ -280,7 +280,7 @@ Error léxico
 
 En vez de envolver todo en un `ojo` gigante, captura cerca del origen del problema:
 
-```piola
+```wn
 // ✗ Demasiado amplio — no sabes qué falló
 ojo {
   wea datos     = obtener_datos()

@@ -1,5 +1,5 @@
 ---
-title: Piola
+title: WN++
 description: Un lenguaje de programación chileno, simple y directo.
 template: splash
 hero:
@@ -8,10 +8,10 @@ hero:
     file: ../../assets/logo.svg
   actions:
     - text: Empezar
-      link: /piola/instalacion/
+      link: /wn/instalacion/
       icon: right-arrow
     - text: Ver en GitHub
-      link: https://github.com/cuervolu/piola
+      link: https://github.com/cuervolu/wn
       icon: github
       variant: minimal
 ---
@@ -20,7 +20,7 @@ import { Card, CardGrid, Code } from '@astrojs/starlight/components';
 
 <div class="hero-code">
 
-```piola
+```wn
 // Un lenguaje que se lee como se habla
 pega fibonacci(n) {
   cachai (n <= 1) {
@@ -37,7 +37,7 @@ altiro(fibonacci(10))  // → 55
 
 <div class="feature-grid">
 
-## ¿Por qué Piola?
+## ¿Por qué WN++?
 
 <CardGrid>
   <Card title="A la chilena" icon="star">
@@ -47,7 +47,7 @@ altiro(fibonacci(10))  // → 55
     Sin magia implícita. Sin coerciones silenciosas. Si el código dice que suma, suma. Si algo falla, te dice exactamente dónde y por qué, con funa incluida.
   </Card>
   <Card title="Para aprender cómo funciona todo" icon="open-book">
-    El pipeline completo está expuesto: Lexer - Parser - AST - Intérprete. Leer el código fuente de Piola es un recorrido por cómo funcionan los lenguajes simples por dentro.
+    El pipeline completo está expuesto: Lexer - Parser - AST - Intérprete. Leer el código fuente de WN++ es un recorrido por cómo funcionan los lenguajes simples por dentro.
   </Card>
   <Card title="Errores con carácter" icon="warning">
     `"No podi sumar un 'numero' con un 'texto' pedazo de saco wea."` — los errores dicen exactamente qué pasó, y lo dicen a la chilena.
@@ -64,7 +64,7 @@ altiro(fibonacci(10))  // → 55
 
 <Card title="Variables y constantes" icon="pencil">
 
-```piola
+```wn
 wea x = 10          // mutable
 duro PI = 3.1415    // inmutable
 
@@ -76,7 +76,7 @@ PI = 3              // Error: 'PI' es duro
 
 <Card title="Funciones" icon="puzzle">
 
-```piola
+```wn
 pega saludar(nombre) {
   "Hola, " + nombre + "!"
 }
@@ -88,7 +88,7 @@ altiro(saludar("Rosario"))  // → Hola, Rosario!
 
 <Card title="Control de flujo" icon="list-format">
 
-```piola
+```wn
 wea edad = 20
 
 cachai (edad >= 18) {
@@ -102,7 +102,7 @@ cachai (edad >= 18) {
 
 <Card title="Manejo de errores" icon="warning">
 
-```piola
+```wn
 ojo {
   wea resultado = 10 / 0
 } cago(error) {
