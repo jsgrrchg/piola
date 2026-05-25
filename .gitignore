@@ -22,6 +22,7 @@ target
 
 
 Cargo.lock
+# Compatibilidad histórica: el binario antiguo usaba este historial local.
 .piola_history
 .wn_history
 

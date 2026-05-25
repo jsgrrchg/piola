@@ -18,12 +18,12 @@ Closes #<!-- número del issue -->
 <!-- Llena esta sección solo si modificas lexer, parser, intérprete, o AST. -->
 
 **Antes:**
-```piola
+```wn
 
 ```
 
 **Después:**
-```piola
+```wn
 
 ```
 

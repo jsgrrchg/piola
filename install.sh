@@ -2,9 +2,11 @@
 
 set -e
 
-PIOLA_REPO="cuervolu/piola"
-PIOLA_BIN_DIR="${PIOLA_HOME:-$HOME/.piola}/bin"
-PIOLA_VERSION="${PIOLA_VERSION:-latest}"
+WN_REPO="cuervolu/wn"
+WN_PACKAGE="wn-cli"
+WN_BIN_DIR="${WN_HOME:-$HOME/.wn}/bin"
+WN_VERSION="${WN_VERSION:-latest}"
+LEGACY_PIOLA_BIN="${PIOLA_HOME:-$HOME/.piola}/bin/piola"
 
 if [ -t 1 ]; then
     BOLD="$(printf '\033[1m')"
@@ -62,7 +64,7 @@ get_latest_version() {
         error "curl no encontrado"
     fi
 
-    local url="https://api.github.com/repos/${PIOLA_REPO}/releases/latest"
+    local url="https://api.github.com/repos/${WN_REPO}/releases/latest"
     local version
 
     version=$(curl -fsSL "$url" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
@@ -75,7 +77,7 @@ get_latest_version() {
 }
 
 
-install_piola() {
+install_wn() {
     local target version archive_url tmp_dir
 
     section "Detectando plataforma"
@@ -83,32 +85,32 @@ install_piola() {
     info "Target: $target"
 
     section "Obteniendo versión"
-    if [ "$PIOLA_VERSION" = "latest" ]; then
+    if [ "$WN_VERSION" = "latest" ]; then
         version="$(get_latest_version)"
     else
-        version="$PIOLA_VERSION"
+        version="$WN_VERSION"
     fi
     info "Versión: $version"
 
-    archive_url="https://github.com/${PIOLA_REPO}/releases/download/${version}/piola-${version}-${target}.tar.gz"
+    archive_url="https://github.com/${WN_REPO}/releases/download/${version}/${WN_PACKAGE}-${version}-${target}.tar.xz"
 
-    section "Descargando Piola $version"
+    section "Descargando WN++ $version"
     info "Desde: $archive_url"
 
     tmp_dir="$(mktemp -d)"
     # shellcheck disable=SC2064
     trap "rm -rf '$tmp_dir'" EXIT
 
-    if ! curl -fsSL --progress-bar "$archive_url" -o "$tmp_dir/piola.tar.gz"; then
+    if ! curl -fsSL --progress-bar "$archive_url" -o "$tmp_dir/wn.tar.xz"; then
         error "No se pudo descargar $archive_url\n  ¿Existe este release para $target?"
     fi
 
     section "Instalando"
-    tar -xzf "$tmp_dir/piola.tar.gz" -C "$tmp_dir"
-    mkdir -p "$PIOLA_BIN_DIR"
-    mv "$tmp_dir/piola" "$PIOLA_BIN_DIR/piola"
-    chmod +x "$PIOLA_BIN_DIR/piola"
-    info "Binario instalado en: $PIOLA_BIN_DIR/piola"
+    tar -xJf "$tmp_dir/wn.tar.xz" -C "$tmp_dir"
+    mkdir -p "$WN_BIN_DIR"
+    mv "$tmp_dir/wn" "$WN_BIN_DIR/wn"
+    chmod +x "$WN_BIN_DIR/wn"
+    info "Binario instalado en: $WN_BIN_DIR/wn"
 
     section "Configurando PATH"
     configure_path
@@ -117,18 +119,18 @@ install_piola() {
 configure_path() {
     local shell_config export_line
 
-    export_line="export PATH=\"\$PATH:$PIOLA_BIN_DIR\""
+    export_line="export PATH=\"\$PATH:$WN_BIN_DIR\""
 
     case "${SHELL:-}" in
         */zsh)  shell_config="$HOME/.zshrc" ;;
         */bash) shell_config="$HOME/.bashrc" ;;
         */fish) shell_config="$HOME/.config/fish/config.fish"
-                export_line="fish_add_path $PIOLA_BIN_DIR" ;;
+                export_line="fish_add_path $WN_BIN_DIR" ;;
         *)      shell_config="$HOME/.profile" ;;
     esac
 
-    if ! grep -qF "$PIOLA_BIN_DIR" "$shell_config" 2>/dev/null; then
-        printf "\n# Piola\n%s\n" "$export_line" >> "$shell_config"
+    if ! grep -qF "$WN_BIN_DIR" "$shell_config" 2>/dev/null; then
+        printf "\n# WN++\n%s\n" "$export_line" >> "$shell_config"
         info "PATH actualizado en $shell_config"
     else
         info "PATH ya configurado en $shell_config"
@@ -137,12 +139,20 @@ configure_path() {
     warn "Reinicia tu terminal o ejecuta: source $shell_config"
 }
 
+warn_legacy_piola() {
+    if [ -x "$LEGACY_PIOLA_BIN" ]; then
+        warn "Detecté una instalación antigua de Piola en: $LEGACY_PIOLA_BIN"
+        warn "WN++ usa el comando 'wn' y se instala aparte; 'piola update' no migra al nuevo nombre."
+        warn "Cuando confirmes que 'wn' funciona, puedes eliminar la instalación antigua manualmente."
+    fi
+}
+
 verify_installation() {
-    if "$PIOLA_BIN_DIR/piola" --version > /dev/null 2>&1; then
+    if "$WN_BIN_DIR/wn" --version > /dev/null 2>&1; then
         section "¡Listo!"
-        printf "\n  %sPiola instalado exitosamente.%s\n\n" "$GREEN$BOLD" "$RESET"
-        printf "  Ejecuta %spiola%s para abrir el REPL\n"     "$BOLD" "$RESET"
-        printf "  o %spiola programa.cl%s para ejecutar un archivo\n\n" "$BOLD" "$RESET"
+        printf "\n  %sWN++ instalado exitosamente.%s\n\n" "$GREEN$BOLD" "$RESET"
+        printf "  Ejecuta %swn%s para abrir el REPL\n"     "$BOLD" "$RESET"
+        printf "  o %swn programa.cl%s para ejecutar un archivo\n\n" "$BOLD" "$RESET"
     else
         warn "El binario se instaló pero no respondió a --version."
         warn "Puede que necesites reiniciar tu terminal."
@@ -150,10 +160,11 @@ verify_installation() {
 }
 
 main() {
-    printf "\n%sBienvenido al instalador de Piola%s\n" "$BOLD" "$RESET"
+    printf "\n%sBienvenido al instalador de WN++%s\n" "$BOLD" "$RESET"
 
     check_dependencies
-    install_piola
+    warn_legacy_piola
+    install_wn
     verify_installation
 }
 
