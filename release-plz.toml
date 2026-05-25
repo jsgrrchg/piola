@@ -7,6 +7,7 @@ pr_labels = ["release"]
 publish = false
 semver_check = false
 dependencies_update = true
+release_always = false
 
 [[package]]
 name = "wn-cli"

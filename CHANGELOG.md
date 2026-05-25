@@ -4,7 +4,7 @@ Acá están todos los cambios importantes del proyecto, mi chanchito.
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## [No publicado]
+## [wn-v0.1.0] - 2026-05-25
 
 
 ### Arreglado
@@ -13,6 +13,13 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Misceláneos
 - Arreglar formato de la tabla de archivos en el README por @cuervolu
+- Agregar plantilla para pull requests por @cuervolu
+- Agregar guía de contribución en CONTRIBUTING.md por @cuervolu
+- Agregar configuración de CI para formateo, linting y pruebas por @cuervolu
+- Migrar marca y docs a WN++ por @jsgrrchg
+- Actualizar installers y templates a WN++ por @jsgrrchg
+- Actualizar pipeline de release a WN++ por @jsgrrchg
+- Migrar Piola a WN++ (#11) por @cuervolu ([#11](https://github.com/cuervolu/wn/pull/11))
 
 
 ## [piola-core-v0.1.0] - 2026-05-25
@@ -72,7 +79,7 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Add cliff.toml for changelog generation por @cuervolu
 
 
-[unreleased]: https://github.com/cuervolu/wn/compare/piola-core-v0.1.0..HEAD
+[wn-v0.1.0]: https://github.com/cuervolu/wn/compare/piola-core-v0.1.0..wn-v0.1.0
 [piola-core-v0.1.0]: https://github.com/cuervolu/wn/compare/piola-v0.1.0..piola-core-v0.1.0
 [piola-v0.1.0]: https://github.com/cuervolu/wn/compare/v0.1.0..piola-v0.1.0
 
