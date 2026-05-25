@@ -9,5 +9,5 @@ semver_check = false
 dependencies_update = true
 
 [[package]]
-name = "piola-cli"
+name = "wn-cli"
 changelog_update = false # solo el workspace genera changelog

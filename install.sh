@@ -92,7 +92,7 @@ install_wn() {
     fi
     info "Versión: $version"
 
-    archive_url="https://github.com/${WN_REPO}/releases/download/${version}/${WN_PACKAGE}-${version}-${target}.tar.xz"
+    archive_url="https://github.com/${WN_REPO}/releases/download/${version}/${WN_PACKAGE}-${version}-${target}.tar.gz"
 
     section "Descargando WN++ $version"
     info "Desde: $archive_url"
@@ -101,12 +101,12 @@ install_wn() {
     # shellcheck disable=SC2064
     trap "rm -rf '$tmp_dir'" EXIT
 
-    if ! curl -fsSL --progress-bar "$archive_url" -o "$tmp_dir/wn.tar.xz"; then
+    if ! curl -fsSL --progress-bar "$archive_url" -o "$tmp_dir/wn.tar.gz"; then
         error "No se pudo descargar $archive_url\n  ¿Existe este release para $target?"
     fi
 
     section "Instalando"
-    tar -xJf "$tmp_dir/wn.tar.xz" -C "$tmp_dir"
+    tar -xzf "$tmp_dir/wn.tar.gz" -C "$tmp_dir"
     mkdir -p "$WN_BIN_DIR"
     mv "$tmp_dir/wn" "$WN_BIN_DIR/wn"
     chmod +x "$WN_BIN_DIR/wn"

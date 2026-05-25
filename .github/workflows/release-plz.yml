@@ -8,6 +8,10 @@ on:
       - 'crates/**'
       - 'Cargo.toml'
       - 'Cargo.lock'
+      - 'release-plz.toml'
+      - 'cliff.toml'
+      - 'CHANGELOG.md'
+      - '.github/workflows/release-plz.yml'
 
 jobs:
   release-plz:

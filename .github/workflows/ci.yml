@@ -9,6 +9,8 @@ on:
       - "crates/**"
       - "Cargo.toml"
       - "Cargo.lock"
+      - "dist-workspace.toml"
+      - ".github/workflows/ci.yml"
 
 jobs:
   fmt:

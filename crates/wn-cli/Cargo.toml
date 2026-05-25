@@ -3,7 +3,7 @@ name = "wn-cli"
 version = "0.1.0"
 edition = "2024"
 description = "CLI and REPL for the WN++ programming language"
-repository = "https://github.com/cuervolu/piola"
+repository = "https://github.com/cuervolu/wn"
 license = "MIT"
 keywords = ["wn", "language", "interpreter", "cli", "chile"]
 
@@ -19,5 +19,6 @@ self_update = { version = "0.44", features = [
     "archive-tar",
     "archive-zip",
     "compression-flate2",
+    "compression-zip-deflate",
 ] }
 wn = { path = "../wn" }
