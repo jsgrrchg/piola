@@ -1,7 +1,7 @@
 mod common;
 
 use insta::assert_snapshot;
-use piola::error::PiolaError;
+use wn::error::WnError;
 
 use common::{render_error, run_program, run_program_with_output};
 
@@ -11,7 +11,7 @@ fn duro_redeclarado_lanza_error() {
 
     assert!(resultado.is_err());
     let err = resultado.unwrap_err();
-    assert!(matches!(err, PiolaError::Runtime { .. }));
+    assert!(matches!(err, WnError::Runtime { .. }));
     assert_snapshot!("duro_redeclarado_lanza_error", render_error(&err));
 }
 
@@ -21,7 +21,7 @@ fn duro_reasignacion_directa_lanza_error() {
 
     assert!(resultado.is_err());
     let err = resultado.unwrap_err();
-    assert!(matches!(err, PiolaError::Runtime { .. }));
+    assert!(matches!(err, WnError::Runtime { .. }));
     assert_snapshot!("duro_reasignacion_directa_lanza_error", render_error(&err));
 }
 
@@ -48,6 +48,6 @@ fn variable_no_definida_da_error_correcto() {
 
     assert!(resultado.is_err());
     let err = resultado.unwrap_err();
-    assert!(matches!(err, PiolaError::Runtime { .. }));
+    assert!(matches!(err, WnError::Runtime { .. }));
     assert_snapshot!("variable_no_definida_da_error_correcto", render_error(&err));
 }

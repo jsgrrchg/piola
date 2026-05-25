@@ -1,5 +1,5 @@
 ---
-source: crates/piola/src/parser/mod.rs
+source: crates/wn/src/parser/mod.rs
 expression: ast
 ---
 [

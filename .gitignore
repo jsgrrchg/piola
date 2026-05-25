@@ -23,5 +23,6 @@ target
 
 Cargo.lock
 .piola_history
+.wn_history
 
 **/*.snap.new
