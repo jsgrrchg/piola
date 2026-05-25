@@ -1,5 +1,5 @@
 [package]
-name = "piola-cli"
+name = "piola"
 version = "0.1.0"
 edition = "2024"
 description = "CLI and REPL for the Piola programming language"
@@ -12,12 +12,12 @@ name = "piola"
 path = "src/main.rs"
 
 [dependencies]
-clap      = { version = "4", features = ["derive"] }
-miette    = { version = "7", features = ["fancy"] }
+clap = { version = "4", features = ["derive"] }
+miette = { version = "7", features = ["fancy"] }
 rustyline = "18"
 self_update = { version = "0.44", features = [
     "archive-tar",
     "archive-zip",
     "compression-flate2",
 ] }
-piola     = { path = "../piola" }
+piola = { path = "../piola", package = "piola-core" }

@@ -13,7 +13,7 @@ Piola se distribuye como un binario único, sin dependencias. Lo instalas y func
   <TabItem label="macOS / Linux" icon="linux">
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/cuervolu/piola/main/install.sh | bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/cuervolu/piola/releases/latest/download/piola-cli-installer.sh | sh
 ```
 
 El script detecta tu arquitectura automáticamente — Intel, Apple Silicon, ARM — y descarga el binario correcto.
@@ -24,12 +24,8 @@ El script detecta tu arquitectura automáticamente — Intel, Apple Silicon, ARM
 Abre PowerShell y ejecuta:
 
 ```powershell
-iwr -useb https://raw.githubusercontent.com/cuervolu/piola/main/install.ps1 | iex
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/cuervolu/piola/releases/latest/download/piola-cli-installer.ps1 | iex"
 ```
-
-<Aside type="caution">
-  Ejecuta PowerShell como usuario normal, no como administrador. El instalador escribe en `~\.piola\bin`, que no requiere permisos elevados.
-</Aside>
 
   </TabItem>
 </Tabs>

@@ -1,7 +1,10 @@
 [package]
-name = "piola"
+name = "piola-core"
 version = "0.1.0"
 edition = "2024"
+
+[lib]
+name = "piola"
 
 [dependencies]
 miette  = { version = "7", features = ["fancy"] }
