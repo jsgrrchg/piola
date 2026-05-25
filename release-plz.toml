@@ -7,8 +7,11 @@ pr_labels = ["release"]
 publish = false
 semver_check = false
 dependencies_update = true
-version_group = "workspace"
 
 [[package]]
 name = "wn-cli"
 changelog_update = false # solo el workspace genera changelog
+
+[[package]]
+name = "wn"
+changelog_update = false
