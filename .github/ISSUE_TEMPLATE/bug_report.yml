@@ -1,0 +1,114 @@
+name: "Bug report"
+description: "Algo se rompió. Cuéntanos qué pasó."
+title: "[Bug]: "
+labels: [ "bug", "triage" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de abrir un issue, revisa si ya existe uno parecido.
+        Mientras más detalle des, más fácil es reproducir y arreglar el bug.
+
+  - type: input
+    id: version
+    attributes:
+      label: "Versión de Piola"
+      description: "Corre `piola --version` y pega el resultado acá."
+      placeholder: "ej: piola 0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: "Sistema operativo / target"
+      description: "¿Desde qué plataforma estás corriendo Piola?"
+      options:
+        - "macOS — Apple Silicon (aarch64-apple-darwin)"
+        - "macOS — Intel (x86_64-apple-darwin)"
+        - "Linux — x86_64 (x86_64-unknown-linux-gnu)"
+        - "Linux — ARM64 (aarch64-unknown-linux-gnu)"
+        - "Windows — x86_64 (x86_64-pc-windows-msvc)"
+        - "Otro (especificar en contexto adicional)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: "Método de instalación"
+      description: "¿Cómo instalaste Piola?"
+      options:
+        - "Script de instalación"
+        - "Descarga manual del release"
+        - "Compilado desde el código fuente"
+        - "piola update"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "¿Qué pasó?"
+      description: "Descripción clara y concisa del bug."
+      placeholder: "Al correr X, Piola hace Y en vez de Z."
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: "Pasos para reproducir"
+      description: "¿Cómo llegamos al bug? Sé específico."
+      placeholder: |
+        1. Crea un archivo `bug.cl` con el siguiente contenido
+        2. Corre `piola run bug.cl`
+        3. Observa el error
+    validations:
+      required: true
+
+  - type: textarea
+    id: snippet
+    attributes:
+      label: "Código Piola"
+      description: "El fragmento mínimo que reproduce el bug. Se formateará como código automáticamente."
+      render: "piola"
+      placeholder: |
+        wea x = 10
+        altiro(x + "wena")  // ← acá caga
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Comportamiento esperado"
+      description: "¿Qué debería haber pasado?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Comportamiento actual"
+      description: "¿Qué pasó en realidad? Incluye el mensaje de error completo si hay uno."
+      render: "shell"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Contexto adicional"
+      description: "Screenshots, logs, configuración especial, o cualquier otra cosa relevante."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "Busqué issues existentes y no encontré uno igual."
+          required: true
+        - label: "Probé con la última versión de Piola."
+          required: false

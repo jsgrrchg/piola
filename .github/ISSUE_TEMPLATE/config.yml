@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "💬 Discusión general"
+    url: https://github.com/cuervolu/piola/discussions
+    about: "Preguntas, ideas sin forma todavía, o simplemente charlar sobre el lenguaje."
+  - name: "Documentación"
+    url: https://cuervolu.github.io/piola
+    about: "Revisa la doc oficial antes de abrir un issue de duda."

@@ -1,0 +1,96 @@
+name: "Feature request"
+description: "¿Tienes una idea para mejorar Piola? Pasa pa aca."
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Las mejores propuestas explican el **problema** antes que la solución.
+        Si tienes código de ejemplo en `.cl`, mejor todavía.
+  - type: textarea
+    id: problem
+    attributes:
+      label: "¿Qué problema resuelve?"
+      description: |
+        Describe el problema o limitación concreta. Ej: "No hay forma de X,
+        así que cuando quiero Y tengo que hacer Z que es engorroso."
+      placeholder: "Actualmente, para hacer X tengo que..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "Propuesta"
+      description: "¿Cómo lo resolverías? Puede ser sintaxis nueva, comportamiento nuevo, o cambio a algo existente."
+      placeholder: "Propongo agregar X porque..."
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: "Ejemplo de uso (.cl)"
+      description: "¿Cómo se vería en código Piola? No tiene que compilar, es para ilustrar la idea."
+      render: "piola"
+      placeholder: |
+        // Así se usaría la nueva feature
+        wea resultado = algo_nuevo(x, y)
+        altiro(resultado)
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternativas consideradas"
+      description: "¿Hay otra forma de resolver el mismo problema? ¿Por qué la descartaste?"
+    validations:
+      required: false
+  - type: dropdown
+    id: scope
+    attributes:
+      label: "¿En qué parte del lenguaje impacta esto?"
+      description: "Selecciona la más relevante."
+      options:
+        - "Sintaxis / parser"
+        - "Semántica / intérprete"
+        - "Tipos y conversiones"
+        - "Standard library (built-ins)"
+        - "Manejo de errores"
+        - "REPL"
+        - "CLI (piola run, piola fmt, etc.)"
+        - "Tooling / ecosistema"
+        - "Documentación"
+        - "Otro"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: "¿En qué fase del roadmap encajaría?"
+      description: "Referencia al [roadmap oficial](https://cuervolu.github.io/piola/roadmap/)."
+      options:
+        - "v0.2 — El lenguaje completo"
+        - "v0.3 — Tooling"
+        - "v0.4 — Standard library"
+        - "v1.0 — VM + bytecode"
+        - "No sé / no importa"
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Contexto adicional"
+      description: "Arte conceptual, referencias a otros lenguajes, benchmarks, lo que sea útil."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "Busqué issues existentes y no encontré una propuesta igual."
+          required: true
