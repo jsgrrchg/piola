@@ -1,6 +1,6 @@
-# Contribuyendo a Piola
+# Contribuyendo a WN++
 
-Wena, gracias por querer contribuir. Piola es un proyecto en etapa temprana, así que cada aporte cuenta, desde un typo en la doc hasta una feature nueva del lenguaje.
+Wena, gracias por querer contribuir. WN++ es un proyecto en etapa temprana, así que cada aporte cuenta, desde un typo en la doc hasta una feature nueva del lenguaje.
 
 Antes de empezar, lee esto. No es largo.
 
@@ -10,7 +10,7 @@ Depende de qué quieres cambiar:
 
 **Abre un issue primero si tu cambio afecta el lenguaje:**
 - Lexer, parser, o AST
-- Sintaxis o semántica de Piola
+- Sintaxis o semántica de WN++
 - El intérprete o comportamiento en runtime
 - Mensajes de error
 
@@ -114,4 +114,4 @@ El scope es opcional pero recomendado cuando el cambio está acotado a una parte
 
 ## ¿Dudas?
 
-Abre una [discusión](https://github.com/cuervolu/piola/discussions) en vez de un issue. Los issues son para bugs y features concretas.
+Abre una [discusión](https://github.com/cuervolu/wn/discussions) en vez de un issue. Los issues son para bugs y features concretas.

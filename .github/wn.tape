@@ -12,7 +12,7 @@ Set MarginFill "#1e1e2e"
 Set Framerate 30
 Set TypingSpeed 80ms
 
-Type "piola"
+Type "wn"
 Enter
 Wait+Screen />>>/
 Sleep 800ms
@@ -28,7 +28,7 @@ Sleep 600ms
 
 
 Sleep 400ms
-Type `wea nombre = "Piola"`
+Type `wea nombre = "WN++"`
 Enter
 Sleep 400ms
 

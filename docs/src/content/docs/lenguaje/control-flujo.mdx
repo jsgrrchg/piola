@@ -1,11 +1,11 @@
 ---
 title: Control de Flujo
-description: cachai, mientras, para, cortala y sigue — cómo dirigir la ejecución en Piola.
+description: cachai, mientras, para, cortala y sigue — cómo dirigir la ejecución en WN++.
 ---
 
 import { Aside, Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
 
-El control de flujo es lo que hace que un programa tome decisiones, repita cosas, y sepa cuándo parar. Piola tiene lo necesario y nada más.
+El control de flujo es lo que hace que un programa tome decisiones, repita cosas, y sepa cuándo parar. WN++ tiene lo necesario y nada más.
 
 ---
 
@@ -13,7 +13,7 @@ El control de flujo es lo que hace que un programa tome decisiones, repita cosas
 
 La forma de tomar decisiones. Si la condición es verdad, ejecuta el bloque. Si no, sigue de largo o ejecuta el `si no`.
 
-```piola
+```wn
 wea temperatura_horno = 180
 
 cachai (temperatura_horno >= 200) {
@@ -28,7 +28,7 @@ cachai (temperatura_horno >= 200) {
 
 No hay `sino cachai` como en otros lenguajes — se anidan bloques:
 
-```piola
+```wn
 wea ingredientes = 3
 
 cachai (ingredientes == 0) {
@@ -47,7 +47,7 @@ cachai (ingredientes == 0) {
 
 Usa `y`, `o`, y `no` para combinar condiciones:
 
-```piola
+```wn
 wea tiene_palta  = verdad
 wea tiene_tomate = verdad
 wea tiene_mayo   = falso
@@ -71,7 +71,7 @@ cachai (no tiene_mayo) {
 
 Repite un bloque **mientras** una condición sea verdad. Clásico para cuando no sabes cuántas veces vas a repetir algo.
 
-```piola
+```wn
 // Freír sopaipillas hasta que se acabe la masa
 wea masa_restante = 500  // gramos
 
@@ -97,7 +97,7 @@ altiro("¡Se acabó la masa!")
 
 Itera sobre cada elemento de una lista o los caracteres de un texto. Úsalo cuando sabes exactamente sobre qué vas a iterar.
 
-```piola
+```wn
 // Ingredientes de una cazuela
 wea ingredientes = ["vacuno", "papas", "choclo", "zanahoria", "zapallo"]
 
@@ -113,7 +113,7 @@ para (ingrediente en ingredientes) {
 
 También funciona con texto:
 
-```piola
+```wn
 para (letra en "pebre") {
   altiro(letra)
 }
@@ -130,7 +130,7 @@ para (letra en "pebre") {
 
 Interrumpe el bucle inmediatamente. Útil cuando ya encontraste lo que buscabas o ya tuviste suficiente.
 
-```piola
+```wn
 wea completos_comidos = 0
 
 mientras (verdad) {  // bucle infinito a propósito
@@ -150,7 +150,7 @@ mientras (verdad) {  // bucle infinito a propósito
 
 En un `para`:
 
-```piola
+```wn
 wea postres = ["manjar", "calzones rotos", "mote con huesillos", "leche asada"]
 
 para (postre en postres) {
@@ -175,7 +175,7 @@ para (postre en postres) {
 
 Salta el resto del bloque actual y pasa directo a la siguiente vuelta del bucle. Útil para ignorar casos específicos.
 
-```piola
+```wn
 // Preparando chorrillana — saltamos las cebollas porque alguien es resentido
 wea toppings = ["papas fritas", "cebolla", "carne mechada", "huevo", "cebolla"]
 
@@ -199,7 +199,7 @@ para (topping en toppings) {
 
 Un ejemplo más completo: calcular el precio de un pedido de empanadas con descuento por cantidad.
 
-```piola
+```wn
 wea pedido    = ["pino", "queso", "pino", "camarón", "pino"]
 wea total     = 0
 wea cant_pino = 0
@@ -243,7 +243,7 @@ Total: $9500
 
 ## Referencia rápida
 
-```piola
+```wn
 // condicional
 cachai (condicion) {
   // si es verdad

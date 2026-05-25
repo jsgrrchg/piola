@@ -5,7 +5,7 @@ description: Qué viene, en qué orden, y por qué.
 
 import { Badge } from '@astrojs/starlight/components';
 
-Piola funciona. Corre, tiene REPL, se instala con un script. Pero todavía le faltan cosas para ser el lenguaje que tiene que ser. Esto es lo que viene.
+WN++ funciona. Corre, tiene REPL, se instala con un script. Pero todavía le faltan cosas para ser el lenguaje que tiene que ser. Esto es lo que viene.
 
 ## v0.2 — El lenguaje completo <Badge text="Próximo" variant="caution" />
 
@@ -15,7 +15,7 @@ Todo lo que hace falta para escribir programas reales sin estar peleando con el 
 
 Las funciones son ciudadanos de primera clase. Se guardan en variables, se pasan como argumentos, se retornan desde otras funciones.
 
-```piola
+```wn
 wea investigar = pega(ser_vivo) {
   "El misterio de los seres vivos: ¿Por qué " + ser_vivo + " hace lo que hace?"
 }
@@ -28,7 +28,7 @@ altiro(investigar("el oso"))
 
 Funciones anónimas para cuando definir una `pega` completa es demasiado. La flecha `->` hace lo que parece.
 
-```piola
+```wn
 wea duplicar = (x) -> x * 2
 wea lista = [1, 2, 3, 4, 5]
 
@@ -40,7 +40,7 @@ altiro(duplicar(4))  // → 8
 
 Sin esto, `pregunta()` es casi inútil. Cualquier input del usuario llega como texto, y no hay forma de operarlo como número.
 
-```piola
+```wn
 wea entrada = pregunta("¿Cuántos años tienes? ")
 wea edad = numero(entrada)
 
@@ -53,7 +53,7 @@ cachai (edad >= 18) {
 
 Concatenar con `+` funciona, pero se vuelve ilegible rápido. Los strings interpolados llevan `$` antes de la comilla y las expresiones van entre `{}`.
 
-```piola
+```wn
 wea nombre = "Bodoque"
 wea edad = 42
 
@@ -65,7 +65,7 @@ altiro($"Wena {nombre}, tienes {edad} años.")
 
 Una forma más limpia de comparar un valor contra múltiples posibilidades. El comodín `_` cubre todo lo que no calce explícitamente.
 
-```piola
+```wn
 wea tipo = cachar(x)
 
 según tipo {
@@ -83,22 +83,22 @@ según tipo {
 
 Un programa de más de un archivo. `meter` (nombre por definir) importa otro `.cl` por nombre, sin extensión.
 
-```piola
+```wn
 meter utils
 meter math/vectores
 
-utils::saludar("Piola")
+utils::saludar("WN++")
 ```
 
 Si hay colisión de nombres, el intérprete falla fuerte y obliga a usar alias — nada de sobrescribir en silencio.
 
-### `piola fmt`
+### `wn fmt`
 
-Un formateador oficial para que todo el código Piola se vea igual, independiente de quién lo escribió. Sin debates de estilo.
+Un formateador oficial para que todo el código WN++ se vea igual, independiente de quién lo escribió. Sin debates de estilo.
 
 ```bash
-piola fmt mi_programa.cl
-piola fmt src/          # formatea un directorio completo
+wn fmt mi_programa.cl
+wn fmt src/          # formatea un directorio completo
 ```
 
 ### Extensión para VS Code
@@ -111,7 +111,7 @@ Soporte básico de editor: syntax highlighting, detección de errores mientras e
 
 Funciones que todo programa eventualmente necesita. Organizada en módulos según el dominio.
 
-El alcance exacto se define después de que los módulos existan y haya programas reales escritos en Piola que indiquen qué falta.
+El alcance exacto se define después de que los módulos existan y haya programas reales escritos en WN++ que indiquen qué falta.
 
 ---
 
@@ -121,7 +121,7 @@ La diferencia entre v0.x y v1.0 no es el lenguaje, la sintaxis no cambia. Es lo 
 
 ### Compilador a bytecode
 
-Hoy, Piola ejecuta el programa recorriendo el árbol sintáctico directamente. En v1.0, primero lo compila a una lista de instrucciones simples — el bytecode — y después las ejecuta. Es como la diferencia entre leer una receta e ir preparando cada ingrediente a medida que lees, versus preparar todo antes de empezar a cocinar.
+Hoy, WN++ ejecuta el programa recorriendo el árbol sintáctico directamente. En v1.0, primero lo compila a una lista de instrucciones simples — el bytecode — y después las ejecuta. Es como la diferencia entre leer una receta e ir preparando cada ingrediente a medida que lees, versus preparar todo antes de empezar a cocinar.
 
 ```
 // Esto:
@@ -140,7 +140,7 @@ Una máquina virtual propia que ejecuta ese bytecode. Un loop que lee instrucci�
 
 ### Garbage Collector
 
-Para que los programas largos no se coman la RAM. El GC de Piola revisa periódicamente qué valores en memoria ya no son accesibles desde ningún lado y los libera. Mark-and-sweep: primero marca todo lo alcanzable, después elimina todo lo que no fue marcado.
+Para que los programas largos no se coman la RAM. El GC de WN++ revisa periódicamente qué valores en memoria ya no son accesibles desde ningún lado y los libera. Mark-and-sweep: primero marca todo lo alcanzable, después elimina todo lo que no fue marcado.
 
 ### REPL mejorado
 
@@ -149,5 +149,5 @@ El REPL actual funciona, pero olvida todo entre líneas. El REPL de v1.0 mantien
 ---
 
 :::note
-Este roadmap es una intención, no un contrato. El orden puede cambiar según lo que se aprenda escribiendo programas reales en Piola. Si una feature de v0.3 resulta ser más urgente que una de v0.2, se mueve.
+Este roadmap es una intención, no un contrato. El orden puede cambiar según lo que se aprenda escribiendo programas reales en WN++. Si una feature de v0.3 resulta ser más urgente que una de v0.2, se mueve.
 :::
