@@ -52,10 +52,10 @@ Si prefieres no usar los scripts, descarga el binario para tu plataforma directa
 
 | Plataforma            | Archivo                                      |
 |-----------------------|----------------------------------------------|
-| macOS (Apple Silicon) | `wn-cli-aarch64-apple-darwin.tar.xz`      |
-| macOS (Intel)         | `wn-cli-x86_64-apple-darwin.tar.xz`       |
-| Linux x86_64          | `wn-cli-x86_64-unknown-linux-gnu.tar.xz`  |
-| Linux ARM64           | `wn-cli-aarch64-unknown-linux-gnu.tar.xz` |
+| macOS (Apple Silicon) | `wn-cli-aarch64-apple-darwin.tar.gz`      |
+| macOS (Intel)         | `wn-cli-x86_64-apple-darwin.tar.gz`       |
+| Linux x86_64          | `wn-cli-x86_64-unknown-linux-gnu.tar.gz`  |
+| Linux ARM64           | `wn-cli-aarch64-unknown-linux-gnu.tar.gz` |
 | Windows 64-bit        | `wn-cli-x86_64-pc-windows-msvc.zip`       |
 
 Cada archivo tiene un `.sha256` correspondiente para verificar la integridad.

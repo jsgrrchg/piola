@@ -92,7 +92,7 @@ install_wn() {
     fi
     info "Versión: $version"
 
-    archive_url="https://github.com/${WN_REPO}/releases/download/${version}/${WN_PACKAGE}-${version}-${target}.tar.gz"
+    archive_url="https://github.com/${WN_REPO}/releases/download/${version}/${WN_PACKAGE}-${target}.tar.gz"
 
     section "Descargando WN++ $version"
     info "Desde: $archive_url"

@@ -65,7 +65,7 @@ function Install-Wn
     }
     Write-Info "Versión: $resolvedVersion"
 
-    $archiveUrl = "https://github.com/$WN_REPO/releases/download/$resolvedVersion/$WN_PACKAGE-$resolvedVersion-$target.zip"
+    $archiveUrl = "https://github.com/$WN_REPO/releases/download/$resolvedVersion/$WN_PACKAGE-$target.zip"
 
     Write-Section "Descargando WN++ $resolvedVersion"
     Write-Info "Desde: $archiveUrl"
