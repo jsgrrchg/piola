@@ -11,7 +11,7 @@ fn duro_redeclarado_lanza_error() {
 
     assert!(resultado.is_err());
     let err = resultado.unwrap_err();
-    assert!(matches!(err, WnError::Runtime { .. }));
+    assert!(matches!(err, WnError::ConstanteInmutable { .. }));
     assert_snapshot!("duro_redeclarado_lanza_error", render_error(&err));
 }
 
@@ -21,7 +21,7 @@ fn duro_reasignacion_directa_lanza_error() {
 
     assert!(resultado.is_err());
     let err = resultado.unwrap_err();
-    assert!(matches!(err, WnError::Runtime { .. }));
+    assert!(matches!(err, WnError::ConstanteInmutable { .. })); // ← antes: Runtime
     assert_snapshot!("duro_reasignacion_directa_lanza_error", render_error(&err));
 }
 
@@ -48,6 +48,6 @@ fn variable_no_definida_da_error_correcto() {
 
     assert!(resultado.is_err());
     let err = resultado.unwrap_err();
-    assert!(matches!(err, WnError::Runtime { .. }));
+    assert!(matches!(err, WnError::VarNoDefinida { .. }));
     assert_snapshot!("variable_no_definida_da_error_correcto", render_error(&err));
 }
