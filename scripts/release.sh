@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
-# scripts/release.sh — Gestiona tags de release para WN++
-# Uso:
-#   ./scripts/release.sh create v0.2.0        # crea y pushea el tag
-#   ./scripts/release.sh delete v0.2.0        # borra local y remoto
-#   ./scripts/release.sh recreate v0.2.0      # borra y vuelve a crear (fix del CI ql)
+# scripts/release.sh — Publica tags de releases YA PREPARADAS para WN++
+#
+# Flujo correcto antes de ejecutar create:
+#   1. Actualiza version = "X.Y.Z" en Cargo.toml
+#   2. Actualiza CHANGELOG.md
+#   3. Commitea y pushea a main
+#
+# Recién ahí:
+#   ./scripts/release.sh create vX.Y.Z
 
-set -e
+set -euo pipefail
 
 BOLD="\033[1m"
 GREEN="\033[32m"
@@ -13,78 +17,107 @@ YELLOW="\033[33m"
 RED="\033[31m"
 RESET="\033[0m"
 
-info()    { printf "${GREEN}[info]${RESET} %s\n" "$1"; }
-warn()    { printf "${YELLOW}[warn]${RESET} %s\n" "$1"; }
+info()    { printf "${GREEN}[info]${RESET}  %s\n" "$1"; }
+warn()    { printf "${YELLOW}[warn]${RESET}  %s\n" "$1"; }
 error()   { printf "${RED}[error]${RESET} %s\n" "$1" >&2; exit 1; }
 section() { printf "\n${BOLD}==> %s${RESET}\n" "$1"; }
 
 check_tag_format() {
     local tag="$1"
-    if ! echo "$tag" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+'; then
-        error "El tag '$tag' no tiene formato válido. Usa vX.Y.Z (ej: v0.2.0)"
+    if ! echo "$tag" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+        error "El tag '$tag' no tiene formato válido. Usa vX.Y.Z o vX.Y.Z-prerelease"
     fi
 }
 
 check_clean_workdir() {
-    if ! git diff --quiet || ! git diff --cached --quiet; then
-        warn "Tienes cambios sin commitear:"
-        git status --short
-        printf "\n¿Continuar de todas formas? [s/N] "
-        read -r respuesta
-        if ! echo "$respuesta" | grep -qiE '^s$'; then
-            error "Abortado. Commitea los cambios primero y luego vienes a wear"
-        fi
+    if [ -n "$(git status --porcelain)" ]; then
+        error "Hay cambios sin commitear. No se puede crear una release."
     fi
+}
+
+check_main_branch() {
+    local branch
+    branch=$(git branch --show-current)
+    [ "$branch" = "main" ] ||
+        error "Debes crear releases desde la branch main (estás en '$branch')."
+}
+
+check_in_sync_with_origin() {
+    git fetch origin main --quiet
+
+    local head origin_main
+    head=$(git rev-parse HEAD)
+    origin_main=$(git rev-parse origin/main)
+
+    [ "$head" = "$origin_main" ] ||
+        error "Tu main local no coincide con origin/main. Haz pull antes de continuar."
+}
+
+check_version_matches_cargo() {
+    local tag="$1"
+    local version="${tag#v}"
+
+    local workspace_version
+    workspace_version=$(
+        awk '
+            /^\[workspace\.package\]$/ { in_section = 1; next }
+            /^\[/ && in_section        { exit }
+            in_section && /^version[[:space:]]*=/ {
+                gsub(/"/, "", $3)
+                print $3
+                exit
+            }
+        ' Cargo.toml
+    )
+
+    [ -n "$workspace_version" ] ||
+        error "No se pudo leer [workspace.package].version en Cargo.toml."
+
+    [ "$version" = "$workspace_version" ] ||
+        error "El tag $tag no coincide con la versión en Cargo.toml ($workspace_version)."
 }
 
 check_remote_exists() {
-    if ! git remote get-url origin > /dev/null 2>&1; then
-        error "No hay remote 'origin' configurado papito!."
-    fi
+    git remote get-url origin > /dev/null 2>&1 ||
+        error "No hay remote 'origin' configurado."
 }
 
-tag_exists_local() {
-    git tag --list "$1" | grep -q "$1"
-}
-
-tag_exists_remote() {
-    git ls-remote --tags origin "refs/tags/$1" | grep -q "$1"
-}
-
+tag_exists_local()  { git tag --list "$1" | grep -q "$1"; }
+tag_exists_remote() { git ls-remote --tags origin "refs/tags/$1" | grep -q "$1"; }
 
 cmd_create() {
     local tag="$1"
 
-    check_tag_format "$tag"
-    check_clean_workdir
+    check_tag_format       "$tag"
     check_remote_exists
+    check_clean_workdir
+    check_main_branch
+    check_in_sync_with_origin
+    check_version_matches_cargo "$tag"
 
     section "Creando tag $tag"
 
     if tag_exists_local "$tag"; then
         error "El tag '$tag' ya existe localmente. Usa 'recreate' para reemplazarlo."
     fi
-
     if tag_exists_remote "$tag"; then
         error "El tag '$tag' ya existe en el remoto. Usa 'recreate' para reemplazarlo."
     fi
 
-    # Muestra el commit sobre el que se creará el tag
-    local commit
+    local commit msg
     commit=$(git rev-parse --short HEAD)
-    local msg
     msg=$(git log -1 --format="%s" HEAD)
     info "Commit: $commit — $msg"
 
     git tag -a "$tag" -m "WN++ $tag"
     info "Tag creado localmente"
 
-    git push origin main --follow-tags
+    # ← solo el tag, no main; no publicamos commits accidentalmente
+    git push origin "$tag"
     info "Tag pusheado a origin"
 
     section "¡Listo!"
-    printf "  Tag ${BOLD}%s${RESET} creado y pusheado.\n" "$tag"
-    printf "  Revisa el pipeline en: https://github.com/cuervolu/wn/actions\n\n"
+    info "Revisa el pipeline: https://github.com/cuervolu/wn/actions"
 }
 
 cmd_delete() {
@@ -95,12 +128,12 @@ cmd_delete() {
 
     section "Borrando tag $tag"
 
-    local deleted=0
+    local deleted=false
 
     if tag_exists_local "$tag"; then
         git tag -d "$tag"
         info "Tag borrado localmente"
-        deleted=1
+        deleted=true
     else
         warn "El tag '$tag' no existe localmente, saltando..."
     fi
@@ -108,18 +141,17 @@ cmd_delete() {
     if tag_exists_remote "$tag"; then
         git push origin --delete "$tag"
         info "Tag borrado del remoto"
-        deleted=1
+        deleted=true
     else
         warn "El tag '$tag' no existe en el remoto, saltando..."
     fi
 
-    if [ $deleted -eq 0 ]; then
+    if [ "$deleted" = false ]; then
         warn "El tag '$tag' no existía en ningún lado."
     else
         section "¡Listo!"
-        printf "  Tag ${BOLD}%s${RESET} eliminado.\n\n" "$tag"
         warn "Si había un Release en GitHub, bórralo manualmente:"
-        printf "  https://github.com/cuervolu/wn/releases/tag/%s\n\n" "$tag"
+        info "https://github.com/cuervolu/wn/releases/tag/$tag"
     fi
 }
 
@@ -129,9 +161,11 @@ cmd_recreate() {
     check_tag_format "$tag"
 
     section "Recreando tag $tag"
-    warn "Esto borrará el tag existente y lo recreará en HEAD."
-    printf "¿Continuar? [s/N] "
+    warn "Usa esto SOLO si el workflow falló antes de publicar una GitHub Release."
+    warn "Si la versión ya fue publicada o descargada, crea una nueva versión patch."
+    printf "\n¿Confirmas que NO existe una release publicada para %s? [s/N] " "$tag"
     read -r respuesta
+
     if ! echo "$respuesta" | grep -qiE '^s$'; then
         error "Abortado."
     fi
@@ -141,7 +175,7 @@ cmd_recreate() {
 }
 
 cmd_list() {
-    section "Tags locales"
+    section "Tags locales (últimos 10)"
     git tag --sort=-version:refname | head -10
 
     section "Último tag"
@@ -150,25 +184,30 @@ cmd_list() {
     info "Último tag: $last"
 }
 
-
 usage() {
-    printf '\n%sUso:%s\n' "$BOLD" "$RESET"
-    printf '  %s <comando> [tag]\n\n' "$0"
-    printf '%sComandos:%s\n' "$BOLD" "$RESET"
-    printf '  create   <vX.Y.Z>   Crea y pushea el tag\n'
-    printf '  delete   <vX.Y.Z>   Borra el tag local y remoto\n'
-    printf '  recreate <vX.Y.Z>   Borra y vuelve a crear (para fixes de CI)\n'
-    printf '  list                Muestra los últimos tags\n\n'
-    printf '%sEjemplos:%s\n' "$BOLD" "$RESET"
-    printf '  %s create v0.2.0\n' "$0"
-    printf '  %s recreate v0.1.0   # después de un fix en CI\n' "$0"
-    printf '  %s delete v0.1.0-beta\n\n' "$0"
+    cat <<EOF
+
+Uso:
+  $0 <comando> [tag]
+
+Comandos:
+  create   <vX.Y.Z>   Crea y pushea el tag
+  delete   <vX.Y.Z>   Borra el tag local y remoto
+  recreate <vX.Y.Z>   Borra y vuelve a crear (para fixes de CI)
+  list                Muestra los últimos tags
+
+Ejemplos:
+  $0 create v0.2.0
+  $0 recreate v0.1.0
+  $0 delete v0.1.0-beta
+
+EOF
 }
 
-COMMAND="${1:-}"
+CMD="${1:-}"
 TAG="${2:-}"
 
-case "$COMMAND" in
+case "$CMD" in
     create)
         [ -z "$TAG" ] && { usage; error "Falta el tag. Ej: $0 create v0.2.0"; }
         cmd_create "$TAG"
