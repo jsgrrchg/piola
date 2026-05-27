@@ -4,6 +4,13 @@ Acá están todos los cambios importantes del proyecto, mi chanchito.
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto sigue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [No publicado]
+
+
+### Cambiado
+- Renombrar builtin altiro a lorea por @cuervolu ([#13](https://github.com/cuervolu/wn/pull/13))
+
+
 ## [wn-v0.1.0] - 2026-05-25
 
 
@@ -79,6 +86,7 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Add cliff.toml for changelog generation por @cuervolu
 
 
+[unreleased]: https://github.com/cuervolu/wn/compare/wn-v0.1.0..HEAD
 [wn-v0.1.0]: https://github.com/cuervolu/wn/compare/piola-core-v0.1.0..wn-v0.1.0
 [piola-core-v0.1.0]: https://github.com/cuervolu/wn/compare/piola-v0.1.0..piola-core-v0.1.0
 [piola-v0.1.0]: https://github.com/cuervolu/wn/compare/v0.1.0..piola-v0.1.0
