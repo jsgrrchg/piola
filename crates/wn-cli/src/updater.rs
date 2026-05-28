@@ -1,9 +1,11 @@
 use miette::IntoDiagnostic;
+use owo_colors::OwoColorize;
 
 pub fn run_update(force: bool) -> miette::Result<()> {
     let current = env!("CARGO_PKG_VERSION");
-    println!("Versión actual: v{current}");
-    println!("Buscando actualizaciones...");
+
+    println!("{} v{}", "Versión actual:".dimmed(), current.cyan(),);
+    println!("{}", "Buscando actualizaciones...".dimmed());
 
     let status = self_update::backends::github::Update::configure()
         .repo_owner("cuervolu")
@@ -19,9 +21,18 @@ pub fn run_update(force: bool) -> miette::Result<()> {
         .update()
         .into_diagnostic()?;
 
-    match status.updated() {
-        true => println!("✓ Actualizado a v{}", status.version()),
-        false => println!("Ya tienes la última versión (v{current})."),
+    if status.updated() {
+        println!(
+            "{} Actualizado a v{}",
+            "✓".green().bold(),
+            status.version().cyan().bold(),
+        );
+    } else {
+        println!(
+            "{} Wena choro! Ya tienes la última versión (v{}).",
+            "✓".green(),
+            current.cyan(),
+        );
     }
 
     Ok(())

@@ -2,7 +2,7 @@
 name = "wn-cli"
 version.workspace = true
 edition.workspace = true
-description = "CLI and REPL for the WN++ programming language"
+description = "CLI y REPL para el intérprete de lenguaje de programación WN++"
 repository.workspace = true
 license.workspace = true
 keywords = ["wn", "language", "interpreter", "cli", "chile"]
@@ -21,4 +21,7 @@ self_update = { version = "0.44", features = [
     "compression-flate2",
     "compression-zip-deflate",
 ] }
+owo-colors = "4"
+dialoguer = "0.12"
+self-replace = "1"
 wn = { path = "../wn" }

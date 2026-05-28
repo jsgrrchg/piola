@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 use miette::IntoDiagnostic;
+use owo_colors::OwoColorize;
 use rustyline::{DefaultEditor, error::ReadlineError};
 
 use crate::updater::run_update;
@@ -40,6 +41,8 @@ enum Command {
         #[arg(long)]
         force: bool,
     },
+    /// Desinstala wn++ del sistema para siempre
+    Uninstall,
 }
 
 fn main() -> miette::Result<()> {
@@ -47,6 +50,7 @@ fn main() -> miette::Result<()> {
 
     match cli.command {
         Some(Command::Update { force }) => run_update(force),
+        Some(Command::Uninstall) => run_uninstall(),
         None => match cli.file {
             Some(path) => run_file(path),
             None => {
@@ -63,7 +67,6 @@ fn run_file(path: PathBuf) -> miette::Result<()> {
     }
 
     let src = std::fs::read_to_string(&path).into_diagnostic()?;
-
     let filename = path.to_string_lossy();
 
     let tokens = Lexer::new(&src).with_filename(&*filename).tokenizar()?;
@@ -79,7 +82,7 @@ fn run_repl() {
     let mut rl = match DefaultEditor::new() {
         Ok(rl) => rl,
         Err(e) => {
-            eprintln!("Error al inicializar el REPL: {e}");
+            eprintln!("{} {e}", "error:".red().bold());
             return;
         }
     };
@@ -87,20 +90,26 @@ fn run_repl() {
     let _ = rl.load_history(".wn_history");
 
     let mut interp = Interprete::nuevo();
+
+    // Banner de bienvenida
     println!(
-        "WN++ v{} — escribe 'chao' para salir",
-        env!("CARGO_PKG_VERSION")
+        "{} {} — escribe {} para salir",
+        "WN++".cyan().bold(),
+        format!("v{}", env!("CARGO_PKG_VERSION")).dimmed(),
+        "'chao'".yellow(),
     );
 
+    let prompt = format!("{} ", ">>>".cyan().bold());
+
     loop {
-        match rl.readline(">>> ") {
+        match rl.readline(&prompt) {
             Ok(line) => {
                 let trimmed = line.trim();
                 if trimmed.is_empty() {
                     continue;
                 }
                 if matches!(trimmed, "chao" | "exit" | "quit") {
-                    println!("¡Chao!");
+                    println!("{}", "¡Chao!".dimmed());
                     break;
                 }
 
@@ -117,20 +126,46 @@ fn run_repl() {
                 }
             }
             Err(ReadlineError::Interrupted) => {
-                println!("(usa 'chao' para salir)");
+                println!("{}", "(usa 'chao' para salir)".dimmed());
             }
             Err(ReadlineError::Eof) => {
-                println!("\n¡Chao!");
+                println!("\n{}", "¡Chao!".dimmed());
                 break;
             }
             Err(e) => {
-                eprintln!("Error del REPL: {e}");
+                eprintln!("{} {e}", "error del REPL:".red().bold());
                 break;
             }
         }
     }
 
     let _ = rl.save_history(".wn_history");
+}
+
+fn run_uninstall() -> miette::Result<()> {
+    use dialoguer::Confirm;
+
+    let confirmado = Confirm::new()
+        .with_prompt(format!(
+            "{} ¿Seguro que quieres desinstalar {}?",
+            "😥".yellow().bold(),
+            "wn++".cyan().bold(),
+        ))
+        .default(false)
+        .interact()
+        .into_diagnostic()?;
+
+    if confirmado {
+        self_replace::self_delete().into_diagnostic()?;
+        println!("{} wn++ desinstalado. Nos vimoooooooo", "✓".green().bold());
+    } else {
+        println!(
+            "{}",
+            "Operación cancelada. Cuidadito nomas compare".dimmed()
+        );
+    }
+
+    Ok(())
 }
 
 fn eprint_error(err: WnError) {
